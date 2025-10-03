@@ -16,4 +16,12 @@ export const deleteUserByIdService = async (id) => {
 }
 
 export const getUserByEmailService = async (email) => {
+    try{
+        const query = `SELECT * FROM users WHERE email = $1`;
+        const result = await pool.query(query, [email]);
+        return result.rows[0];
+    }catch(error){
+        console.error("Error getting user by email:", error);
+        throw error;
+    }
 }

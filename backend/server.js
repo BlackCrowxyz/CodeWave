@@ -2,8 +2,10 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import pool from "./config/db.js";
+import errorHandling from './middlewares/errorHandling.js';
 
 import userRoutes from './routes/userRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -14,7 +16,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 // Routes
-app.use('/api/v1', userRoutes);
+// app.use('/api/v1', userRoutes);
+app.use('/api/v1', authRoutes);
 
 // Error Handling Middleware
 app.use(errorHandling)
