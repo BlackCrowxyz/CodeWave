@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 // Routes
-// app.use('/api/v1', userRoutes);
+app.use('/api/v1', userRoutes);
 app.use('/api/v1', authRoutes);
 
 // Error Handling Middleware

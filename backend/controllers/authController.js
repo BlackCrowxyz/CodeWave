@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 
-import { getUserByEmailService } from "../models/userModels.js";
+import { getUserByEmailService, createUserService } from "../models/userModels.js";
 
 dotenv.config()
 
@@ -72,6 +72,56 @@ export const signout = async (req, res, next) => {
   }
 };
 
-export const signup = async (res, req, next) =>{
-  // implement singup here
-}
+export const signup = async (req, res, next) => {
+  try {
+    const { name, email, password, role = 'user' } = req.body;
+
+    // Validation
+    if (!name || !email || !password) {
+      return handleResponse(res, 400, "Name, email, and password are required");
+    }
+
+    // Check if user already exists
+    const existingUser = await getUserByEmailService(email);
+    if (existingUser) {
+      return handleResponse(res, 409, "User with this email already exists");
+    }
+
+    // Hash password
+    const saltRounds = 10;
+    const hashedPassword = bcrypt.hashSync(password, saltRounds);
+
+    // Create user
+    const userData = {
+      name: name.trim(),
+      email: email.trim().toLowerCase(),
+      password: hashedPassword,
+      role: role
+    };
+
+    const newUser = await createUserService(userData);
+
+    // Generate JWT token
+    const token = jwt.sign({
+      id: String(newUser.id),
+      name: newUser.name,
+      role: newUser.role
+    }, AUTH_KEY, {
+      expiresIn: 2 * 24 * 3600 // 2 days
+    });
+
+    const responseData = {
+      userId: `${newUser.id}`,
+      name: newUser.name,
+      email: newUser.email,
+      role: newUser.role,
+      createdAt: newUser.created_at,
+      accessToken: token,
+    };
+
+    return handleResponse(res, 201, "User created successfully", responseData);
+  } catch (error) {
+    console.error("Error in user signup:", error);
+    next(error);
+  }
+};

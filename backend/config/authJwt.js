@@ -10,7 +10,7 @@ const handleResponse = (res, status, message, data = null) => {
     message: message,
     data: data
   });
-}
+};
 
 const verifyToken = async (req, res, next) => {
   try {
@@ -37,8 +37,23 @@ const verifyToken = async (req, res, next) => {
   }
 };
 
+const verifyRole = (roles) => {
+  return (req, res, next) => {
+    if (!req.user) {
+      return handleResponse(res, 401, "Authentication required");
+    }
+
+    if (!roles.includes(req.user.role)) {
+      return handleResponse(res, 403, "Insufficient permissions");
+    }
+
+    next();
+  };
+};
+
 const authJwt = {
-  verifyToken
+  verifyToken,
+  verifyRole
 };
 
 export default authJwt;
