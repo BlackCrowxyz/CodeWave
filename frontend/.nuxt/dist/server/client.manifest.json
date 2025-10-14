@@ -1,0 +1,18 @@
+{
+  "@vite/client": {
+    "prefetch": true,
+    "isEntry": true,
+    "file": "@vite/client",
+    "css": [],
+    "module": true,
+    "resourceType": "script"
+  },
+  "/Users/pouyamohammadkhani/Desktop/UCC/Complex system design/CodeWave/frontend/node_modules/nuxt/dist/app/entry.js": {
+    "resourceType": "script",
+    "module": true,
+    "prefetch": true,
+    "preload": true,
+    "isEntry": true,
+    "file": "/Users/pouyamohammadkhani/Desktop/UCC/Complex system design/CodeWave/frontend/node_modules/nuxt/dist/app/entry.js"
+  }
+}
