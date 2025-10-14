@@ -1,1 +1,0 @@
--- Database migration script for all tables - dump file
