@@ -1,303 +1,243 @@
-import process from 'node:process';globalThis._importMeta_={url:import.meta.url,env:process.env};import { getRequestHeader, splitCookiesString, setResponseStatus, setResponseHeader, send, getRequestHeaders, defineEventHandler, handleCacheHeaders, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, sendRedirect, proxyRequest, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getResponseStatus, setResponseHeaders, createError, getRouterParam, getQuery as getQuery$1, readBody, getResponseStatusText } from 'file:///Users/pouyamohammadkhani/Desktop/UCC/Complex%20system%20design/CodeWave/frontend/node_modules/h3/dist/index.mjs';
+import process from 'node:process';globalThis._importMeta_={url:import.meta.url,env:process.env};import { tmpdir } from 'node:os';
+import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, sendRedirect, proxyRequest, getRequestHeader, setResponseStatus, setResponseHeader, send, getRequestHeaders, getRequestURL, getResponseHeader, setResponseHeaders, appendResponseHeader, removeResponseHeader, createError, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getResponseStatus, getRouterParam, readBody, getQuery as getQuery$1, getResponseStatusText } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/h3/dist/index.mjs';
 import { Server } from 'node:http';
-import { mkdirSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { resolve, dirname, join } from 'node:path';
+import nodeCrypto from 'node:crypto';
 import { parentPort, threadId } from 'node:worker_threads';
-import { getRequestDependencies, getPreloadLinks, getPrefetchLinks, createRenderer } from 'file:///Users/pouyamohammadkhani/Desktop/UCC/Complex%20system%20design/CodeWave/frontend/node_modules/vue-bundle-renderer/dist/runtime.mjs';
-import { stringify, uneval } from 'file:///Users/pouyamohammadkhani/Desktop/UCC/Complex%20system%20design/CodeWave/frontend/node_modules/devalue/index.js';
-import destr from 'file:///Users/pouyamohammadkhani/Desktop/UCC/Complex%20system%20design/CodeWave/frontend/node_modules/destr/dist/index.mjs';
-import { withQuery, joinURL, withTrailingSlash, parseURL, withoutBase, getQuery, joinRelativeURL } from 'file:///Users/pouyamohammadkhani/Desktop/UCC/Complex%20system%20design/CodeWave/frontend/node_modules/ufo/dist/index.mjs';
-import { renderToString } from 'file:///Users/pouyamohammadkhani/Desktop/UCC/Complex%20system%20design/CodeWave/frontend/node_modules/vue/server-renderer/index.mjs';
-import { propsToString, renderSSRHead } from 'file:///Users/pouyamohammadkhani/Desktop/UCC/Complex%20system%20design/CodeWave/frontend/node_modules/@unhead/ssr/dist/index.mjs';
-import { createHooks } from 'file:///Users/pouyamohammadkhani/Desktop/UCC/Complex%20system%20design/CodeWave/frontend/node_modules/hookable/dist/index.mjs';
-import { createFetch as createFetch$1, Headers as Headers$1 } from 'file:///Users/pouyamohammadkhani/Desktop/UCC/Complex%20system%20design/CodeWave/frontend/node_modules/ofetch/dist/node.mjs';
-import { createCall, createFetch } from 'file:///Users/pouyamohammadkhani/Desktop/UCC/Complex%20system%20design/CodeWave/frontend/node_modules/unenv/runtime/fetch/index.mjs';
-import { klona } from 'file:///Users/pouyamohammadkhani/Desktop/UCC/Complex%20system%20design/CodeWave/frontend/node_modules/klona/dist/index.mjs';
-import defu, { defuFn } from 'file:///Users/pouyamohammadkhani/Desktop/UCC/Complex%20system%20design/CodeWave/frontend/node_modules/defu/dist/defu.mjs';
-import { snakeCase } from 'file:///Users/pouyamohammadkhani/Desktop/UCC/Complex%20system%20design/CodeWave/frontend/node_modules/scule/dist/index.mjs';
-import { createStorage, prefixStorage } from 'file:///Users/pouyamohammadkhani/Desktop/UCC/Complex%20system%20design/CodeWave/frontend/node_modules/unstorage/dist/index.mjs';
-import unstorage_47drivers_47fs from 'file:///Users/pouyamohammadkhani/Desktop/UCC/Complex%20system%20design/CodeWave/frontend/node_modules/unstorage/drivers/fs.mjs';
-import { toRouteMatcher, createRouter } from 'file:///Users/pouyamohammadkhani/Desktop/UCC/Complex%20system%20design/CodeWave/frontend/node_modules/radix3/dist/index.mjs';
-import { getContext } from 'file:///Users/pouyamohammadkhani/Desktop/UCC/Complex%20system%20design/CodeWave/frontend/node_modules/unctx/dist/index.mjs';
+import { getRequestDependencies, getPreloadLinks, getPrefetchLinks, createRenderer } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/vue-bundle-renderer/dist/runtime.mjs';
+import { stringify, uneval } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/devalue/index.js';
+import destr from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/destr/dist/index.mjs';
+import { parseURL, withoutBase, joinURL, getQuery, withQuery, withTrailingSlash, decodePath, withLeadingSlash, withoutTrailingSlash, joinRelativeURL } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/ufo/dist/index.mjs';
+import { renderToString } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/vue/server-renderer/index.mjs';
+import { propsToString, renderSSRHead } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/@unhead/ssr/dist/index.mjs';
+import { createHooks } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/hookable/dist/index.mjs';
+import { createFetch, Headers as Headers$1 } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/ofetch/dist/node.mjs';
+import { fetchNodeRequestHandler, callNodeRequestHandler } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/node-mock-http/dist/index.mjs';
+import { createStorage, prefixStorage } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/unstorage/dist/index.mjs';
+import unstorage_47drivers_47fs from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/unstorage/drivers/fs.mjs';
+import { digest } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/ohash/dist/index.mjs';
+import { klona } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/klona/dist/index.mjs';
+import defu, { defuFn } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/defu/dist/defu.mjs';
+import { snakeCase } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/scule/dist/index.mjs';
+import { getContext } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/unctx/dist/index.mjs';
+import { toRouteMatcher, createRouter } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/radix3/dist/index.mjs';
+import { readFile } from 'node:fs/promises';
+import consola, { consola as consola$1 } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/consola/dist/index.mjs';
+import { ErrorParser } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/youch-core/build/index.js';
+import { Youch } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/youch/build/index.js';
+import { SourceMapConsumer } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/source-map/source-map.js';
 import { AsyncLocalStorage } from 'node:async_hooks';
-import { consola } from 'file:///Users/pouyamohammadkhani/Desktop/UCC/Complex%20system%20design/CodeWave/frontend/node_modules/consola/dist/index.mjs';
-import { captureRawStackTrace, parseRawStackTrace } from 'file:///Users/pouyamohammadkhani/Desktop/UCC/Complex%20system%20design/CodeWave/frontend/node_modules/errx/dist/index.js';
-import { isVNode, version, unref } from 'file:///Users/pouyamohammadkhani/Desktop/UCC/Complex%20system%20design/CodeWave/frontend/node_modules/vue/index.mjs';
-import { hash } from 'file:///Users/pouyamohammadkhani/Desktop/UCC/Complex%20system%20design/CodeWave/frontend/node_modules/ohash/dist/index.mjs';
-import { createServerHead as createServerHead$1, CapoPlugin } from 'file:///Users/pouyamohammadkhani/Desktop/UCC/Complex%20system%20design/CodeWave/frontend/node_modules/unhead/dist/index.mjs';
-import { defineHeadPlugin } from 'file:///Users/pouyamohammadkhani/Desktop/UCC/Complex%20system%20design/CodeWave/frontend/node_modules/@unhead/shared/dist/index.mjs';
+import { captureRawStackTrace, parseRawStackTrace } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/errx/dist/index.js';
+import { isVNode, unref, version } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/vue/index.mjs';
+import { promises } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname as dirname$1, resolve as resolve$1 } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/pathe/dist/index.mjs';
+import { createServerHead as createServerHead$1, CapoPlugin } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/unhead/dist/index.mjs';
+import { defineHeadPlugin } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/@unhead/shared/dist/index.mjs';
 
-function hasReqHeader(event, name, includes) {
-  const value = getRequestHeader(event, name);
-  return value && typeof value === "string" && value.toLowerCase().includes(includes);
-}
-function isJsonRequest(event) {
-  if (hasReqHeader(event, "accept", "text/html")) {
-    return false;
-  }
-  return hasReqHeader(event, "accept", "application/json") || hasReqHeader(event, "user-agent", "curl/") || hasReqHeader(event, "user-agent", "httpie/") || hasReqHeader(event, "sec-fetch-mode", "cors") || event.path.startsWith("/api/") || event.path.endsWith(".json");
-}
-function normalizeError(error, isDev) {
-  const cwd = typeof process.cwd === "function" ? process.cwd() : "/";
-  const stack = (error.unhandled || error.fatal) ? [] : (error.stack || "").split("\n").splice(1).filter((line) => line.includes("at ")).map((line) => {
-    const text = line.replace(cwd + "/", "./").replace("webpack:/", "").replace("file://", "").trim();
-    return {
-      text,
-      internal: line.includes("node_modules") && !line.includes(".cache") || line.includes("internal") || line.includes("new Promise")
-    };
-  });
-  const statusCode = error.statusCode || 500;
-  const statusMessage = error.statusMessage ?? (statusCode === 404 ? "Not Found" : "");
-  const message = error.unhandled ? "internal server error" : error.message || error.toString();
-  return {
-    stack,
-    statusCode,
-    statusMessage,
-    message
-  };
-}
-function _captureError(error, type) {
-  console.error(`[nitro] [${type}]`, error);
-  useNitroApp().captureError(error, { tags: [type] });
-}
-function trapUnhandledNodeErrors() {
-  process.on(
-    "unhandledRejection",
-    (error) => _captureError(error, "unhandledRejection")
-  );
-  process.on(
-    "uncaughtException",
-    (error) => _captureError(error, "uncaughtException")
-  );
-}
-function joinHeaders(value) {
-  return Array.isArray(value) ? value.join(", ") : String(value);
-}
-function normalizeFetchResponse(response) {
-  if (!response.headers.has("set-cookie")) {
-    return response;
-  }
-  return new Response(response.body, {
-    status: response.status,
-    statusText: response.statusText,
-    headers: normalizeCookieHeaders(response.headers)
-  });
-}
-function normalizeCookieHeader(header = "") {
-  return splitCookiesString(joinHeaders(header));
-}
-function normalizeCookieHeaders(headers) {
-  const outgoingHeaders = new Headers();
-  for (const [name, header] of headers) {
-    if (name === "set-cookie") {
-      for (const cookie of normalizeCookieHeader(header)) {
-        outgoingHeaders.append("set-cookie", cookie);
-      }
-    } else {
-      outgoingHeaders.set(name, joinHeaders(header));
-    }
-  }
-  return outgoingHeaders;
-}
+const serverAssets = [{"baseName":"server","dir":"/Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/server/assets"}];
 
-const errorHandler = (async function errorhandler(error, event) {
-  const { stack, statusCode, statusMessage, message } = normalizeError(error);
-  const errorObject = {
-    url: event.path,
-    statusCode,
-    statusMessage,
-    message,
-    stack: statusCode !== 404 ? `<pre>${stack.map((i) => `<span class="stack${i.internal ? " internal" : ""}">${i.text}</span>`).join("\n")}</pre>` : "",
-    // TODO: check and validate error.data for serialisation into query
-    data: error.data
-  };
-  if (error.unhandled || error.fatal) {
-    const tags = [
-      "[nuxt]",
-      "[request error]",
-      error.unhandled && "[unhandled]",
-      error.fatal && "[fatal]",
-      Number(errorObject.statusCode) !== 200 && `[${errorObject.statusCode}]`
-    ].filter(Boolean).join(" ");
-    console.error(tags, (error.message || error.toString() || "internal server error") + "\n" + stack.map((l) => "  " + l.text).join("  \n"));
-  }
-  if (event.handled) {
-    return;
-  }
-  setResponseStatus(event, errorObject.statusCode !== 200 && errorObject.statusCode || 500, errorObject.statusMessage);
-  if (isJsonRequest(event)) {
-    setResponseHeader(event, "Content-Type", "application/json");
-    return send(event, JSON.stringify(errorObject));
-  }
-  const reqHeaders = getRequestHeaders(event);
-  const isRenderingError = event.path.startsWith("/__nuxt_error") || !!reqHeaders["x-nuxt-error"];
-  const res = isRenderingError ? null : await useNitroApp().localFetch(
-    withQuery(joinURL(useRuntimeConfig(event).app.baseURL, "/__nuxt_error"), errorObject),
-    {
-      headers: { ...reqHeaders, "x-nuxt-error": "true" },
-      redirect: "manual"
-    }
-  ).catch(() => null);
-  if (!res) {
-    const { template } = await Promise.resolve().then(function () { return errorDev; }) ;
-    {
-      errorObject.description = errorObject.message;
-    }
-    if (event.handled) {
-      return;
-    }
-    setResponseHeader(event, "Content-Type", "text/html;charset=UTF-8");
-    return send(event, template(errorObject));
-  }
-  const html = await res.text();
-  if (event.handled) {
-    return;
-  }
-  for (const [header, value] of res.headers.entries()) {
-    setResponseHeader(event, header, value);
-  }
-  setResponseStatus(event, res.status && res.status !== 200 ? res.status : undefined, res.statusText);
-  return send(event, html);
-});
-
-const script = `
-if (!window.__NUXT_DEVTOOLS_TIME_METRIC__) {
-  Object.defineProperty(window, '__NUXT_DEVTOOLS_TIME_METRIC__', {
-    value: {},
-    enumerable: false,
-    configurable: true,
-  })
-}
-window.__NUXT_DEVTOOLS_TIME_METRIC__.appInit = Date.now()
-`;
-
-const _fn93bCIS0w = (function(nitro) {
-  nitro.hooks.hook("render:html", (htmlContext) => {
-    htmlContext.head.push(`<script>${script}<\/script>`);
-  });
-});
-
-const rootDir = "/Users/pouyamohammadkhani/Desktop/UCC/Complex system design/CodeWave/frontend";
-
-const appHead = {"meta":[{"name":"viewport","content":"width=device-width, initial-scale=1"},{"charset":"utf-8"},{"hid":"description","name":"description","content":"Template to get you up and running with Nuxt 3 & Vuetify 3"},{"property":"og:site_name","content":"Vuetify 3 + Nuxt 3 Starter"},{"hid":"og:type","property":"og:type","content":"website"},{"hid":"og:url","property":"og:url","content":"https://vuetify3nuxt3starter.behonbaker.com/"},{"hid":"og:image:secure_url","property":"og:image:secure_url","content":"https://vuetify3nuxt3starter.behonbaker.com/starter.png"},{"hid":"og:title","property":"og:title","content":"Vuetify 3 + Nuxt 3 Starter"},{"hid":"og:description","property":"og:description","content":"Template to get you up and running with Nuxt 3 & Vuetify 3"},{"hid":"og:image","property":"og:image","content":"https://vuetify3nuxt3starter.behonbaker.com/starter.png"},{"name":"twitter:card","content":"summary_large_image"},{"hid":"twitter:url","name":"twitter:url","content":"https://vuetify3nuxt3starter.behonbaker.com/"},{"hid":"twitter:title","name":"twitter:title","content":"Vuetify 3 + Nuxt 3 Starter"},{"hid":"twitter:description","name":"twitter:description","content":"Template to get you up and running with Nuxt 3 & Vuetify 3"},{"hid":"twitter:image","name":"twitter:image","content":"https://vuetify3nuxt3starter.behonbaker.com/starter.png"}],"link":[{"rel":"stylesheet","href":"https://rsms.me/inter/inter.css"},{"rel":"preconnect","href":"https://rsms.me/"},{"rel":"icon","type":"image/x-icon","href":"/favicon.ico"},{"rel":"canonical","href":"https://vuetify3nuxt3starter.behonbaker.com/"}],"style":[],"script":[],"noscript":[],"title":"Vuetify 3 + Nuxt 3 Starter","titleTemplate":"%s | Vuetify 3 + Nuxt 3 Starter"};
-
-const appRootTag = "div";
-
-const appRootAttrs = {"id":"__nuxt"};
-
-const appTeleportTag = "div";
-
-const appTeleportAttrs = {"id":"teleports"};
-
-const appId = "nuxt-app";
-
-const devReducers = {
-  VNode: (data) => isVNode(data) ? { type: data.type, props: data.props } : undefined,
-  URL: (data) => data instanceof URL ? data.toString() : undefined
-};
-const asyncContext = getContext("nuxt-dev", { asyncContext: true, AsyncLocalStorage });
-const _Ca3WUQBCQ9 = (nitroApp) => {
-  const handler = nitroApp.h3App.handler;
-  nitroApp.h3App.handler = (event) => {
-    return asyncContext.callAsync({ logs: [], event }, () => handler(event));
-  };
-  onConsoleLog((_log) => {
-    const ctx = asyncContext.tryUse();
-    if (!ctx) {
-      return;
-    }
-    const rawStack = captureRawStackTrace();
-    if (!rawStack || rawStack.includes("runtime/vite-node.mjs")) {
-      return;
-    }
-    const trace = [];
-    let filename = "";
-    for (const entry of parseRawStackTrace(rawStack)) {
-      if (entry.source === globalThis._importMeta_.url) {
-        continue;
-      }
-      if (EXCLUDE_TRACE_RE.test(entry.source)) {
-        continue;
-      }
-      filename ||= entry.source.replace(withTrailingSlash(rootDir), "");
-      trace.push({
-        ...entry,
-        source: entry.source.startsWith("file://") ? entry.source.replace("file://", "") : entry.source
-      });
-    }
-    const log = {
-      ..._log,
-      // Pass along filename to allow the client to display more info about where log comes from
-      filename,
-      // Clean up file names in stack trace
-      stack: trace
-    };
-    ctx.logs.push(log);
-  });
-  nitroApp.hooks.hook("afterResponse", () => {
-    const ctx = asyncContext.tryUse();
-    if (!ctx) {
-      return;
-    }
-    return nitroApp.hooks.callHook("dev:ssr-logs", { logs: ctx.logs, path: ctx.event.path });
-  });
-  nitroApp.hooks.hook("render:html", (htmlContext) => {
-    const ctx = asyncContext.tryUse();
-    if (!ctx) {
-      return;
-    }
-    try {
-      const reducers = Object.assign(/* @__PURE__ */ Object.create(null), devReducers, ctx.event.context._payloadReducers);
-      htmlContext.bodyAppend.unshift(`<script type="application/json" data-nuxt-logs="${appId}">${stringify(ctx.logs, reducers)}<\/script>`);
-    } catch (e) {
-      const shortError = e instanceof Error && "toString" in e ? ` Received \`${e.toString()}\`.` : "";
-      console.warn(`[nuxt] Failed to stringify dev server logs.${shortError} You can define your own reducer/reviver for rich types following the instructions in https://nuxt.com/docs/api/composables/use-nuxt-app#payload.`);
-    }
-  });
-};
-const EXCLUDE_TRACE_RE = /\/node_modules\/(?:.*\/)?(?:nuxt|nuxt-nightly|nuxt-edge|nuxt3|consola|@vue)\/|core\/runtime\/nitro/;
-function onConsoleLog(callback) {
-  consola.addReporter({
-    log(logObj) {
-      callback(logObj);
-    }
-  });
-  consola.wrapConsole();
-}
-
-const plugins = [
-  _fn93bCIS0w,
-_Ca3WUQBCQ9
-];
-
-const _lazy_njOCIe = () => Promise.resolve().then(function () { return renderer$1; });
-
-const handlers = [
-  { route: '/__nuxt_error', handler: _lazy_njOCIe, lazy: true, middleware: false, method: undefined },
-  { route: '/**', handler: _lazy_njOCIe, lazy: true, middleware: false, method: undefined }
-];
-
-const serverAssets = [{"baseName":"server","dir":"/Users/pouyamohammadkhani/Desktop/UCC/Complex system design/CodeWave/frontend/server/assets"}];
-
-const assets = createStorage();
+const assets$1 = createStorage();
 
 for (const asset of serverAssets) {
-  assets.mount(asset.baseName, unstorage_47drivers_47fs({ base: asset.dir, ignore: (asset?.ignore || []) }));
+  assets$1.mount(asset.baseName, unstorage_47drivers_47fs({ base: asset.dir, ignore: (asset?.ignore || []) }));
 }
 
 const storage = createStorage({});
 
-storage.mount('/assets', assets);
+storage.mount('/assets', assets$1);
 
-storage.mount('root', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"/Users/pouyamohammadkhani/Desktop/UCC/Complex system design/CodeWave/frontend","ignore":["**/node_modules/**","**/.git/**"]}));
-storage.mount('src', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"/Users/pouyamohammadkhani/Desktop/UCC/Complex system design/CodeWave/frontend/server","ignore":["**/node_modules/**","**/.git/**"]}));
-storage.mount('build', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"/Users/pouyamohammadkhani/Desktop/UCC/Complex system design/CodeWave/frontend/.nuxt","ignore":["**/node_modules/**","**/.git/**"]}));
-storage.mount('cache', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"/Users/pouyamohammadkhani/Desktop/UCC/Complex system design/CodeWave/frontend/.nuxt/cache","ignore":["**/node_modules/**","**/.git/**"]}));
-storage.mount('data', unstorage_47drivers_47fs({"driver":"fs","base":"/Users/pouyamohammadkhani/Desktop/UCC/Complex system design/CodeWave/frontend/.data/kv","ignore":["**/node_modules/**","**/.git/**"]}));
+storage.mount('root', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"/Users/vinyasr/Desktop/Complex_System/CodeWave/frontend"}));
+storage.mount('src', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"/Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/server"}));
+storage.mount('build', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"/Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/.nuxt"}));
+storage.mount('cache', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"/Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/.nuxt/cache"}));
+storage.mount('data', unstorage_47drivers_47fs({"driver":"fs","base":"/Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/.data/kv"}));
 
 function useStorage(base = "") {
   return base ? prefixStorage(storage, base) : storage;
+}
+
+const Hasher = /* @__PURE__ */ (() => {
+  class Hasher2 {
+    buff = "";
+    #context = /* @__PURE__ */ new Map();
+    write(str) {
+      this.buff += str;
+    }
+    dispatch(value) {
+      const type = value === null ? "null" : typeof value;
+      return this[type](value);
+    }
+    object(object) {
+      if (object && typeof object.toJSON === "function") {
+        return this.object(object.toJSON());
+      }
+      const objString = Object.prototype.toString.call(object);
+      let objType = "";
+      const objectLength = objString.length;
+      objType = objectLength < 10 ? "unknown:[" + objString + "]" : objString.slice(8, objectLength - 1);
+      objType = objType.toLowerCase();
+      let objectNumber = null;
+      if ((objectNumber = this.#context.get(object)) === void 0) {
+        this.#context.set(object, this.#context.size);
+      } else {
+        return this.dispatch("[CIRCULAR:" + objectNumber + "]");
+      }
+      if (typeof Buffer !== "undefined" && Buffer.isBuffer && Buffer.isBuffer(object)) {
+        this.write("buffer:");
+        return this.write(object.toString("utf8"));
+      }
+      if (objType !== "object" && objType !== "function" && objType !== "asyncfunction") {
+        if (this[objType]) {
+          this[objType](object);
+        } else {
+          this.unknown(object, objType);
+        }
+      } else {
+        const keys = Object.keys(object).sort();
+        const extraKeys = [];
+        this.write("object:" + (keys.length + extraKeys.length) + ":");
+        const dispatchForKey = (key) => {
+          this.dispatch(key);
+          this.write(":");
+          this.dispatch(object[key]);
+          this.write(",");
+        };
+        for (const key of keys) {
+          dispatchForKey(key);
+        }
+        for (const key of extraKeys) {
+          dispatchForKey(key);
+        }
+      }
+    }
+    array(arr, unordered) {
+      unordered = unordered === void 0 ? false : unordered;
+      this.write("array:" + arr.length + ":");
+      if (!unordered || arr.length <= 1) {
+        for (const entry of arr) {
+          this.dispatch(entry);
+        }
+        return;
+      }
+      const contextAdditions = /* @__PURE__ */ new Map();
+      const entries = arr.map((entry) => {
+        const hasher = new Hasher2();
+        hasher.dispatch(entry);
+        for (const [key, value] of hasher.#context) {
+          contextAdditions.set(key, value);
+        }
+        return hasher.toString();
+      });
+      this.#context = contextAdditions;
+      entries.sort();
+      return this.array(entries, false);
+    }
+    date(date) {
+      return this.write("date:" + date.toJSON());
+    }
+    symbol(sym) {
+      return this.write("symbol:" + sym.toString());
+    }
+    unknown(value, type) {
+      this.write(type);
+      if (!value) {
+        return;
+      }
+      this.write(":");
+      if (value && typeof value.entries === "function") {
+        return this.array(
+          [...value.entries()],
+          true
+          /* ordered */
+        );
+      }
+    }
+    error(err) {
+      return this.write("error:" + err.toString());
+    }
+    boolean(bool) {
+      return this.write("bool:" + bool);
+    }
+    string(string) {
+      this.write("string:" + string.length + ":");
+      this.write(string);
+    }
+    function(fn) {
+      this.write("fn:");
+      if (isNativeFunction(fn)) {
+        this.dispatch("[native]");
+      } else {
+        this.dispatch(fn.toString());
+      }
+    }
+    number(number) {
+      return this.write("number:" + number);
+    }
+    null() {
+      return this.write("Null");
+    }
+    undefined() {
+      return this.write("Undefined");
+    }
+    regexp(regex) {
+      return this.write("regex:" + regex.toString());
+    }
+    arraybuffer(arr) {
+      this.write("arraybuffer:");
+      return this.dispatch(new Uint8Array(arr));
+    }
+    url(url) {
+      return this.write("url:" + url.toString());
+    }
+    map(map) {
+      this.write("map:");
+      const arr = [...map];
+      return this.array(arr, false);
+    }
+    set(set) {
+      this.write("set:");
+      const arr = [...set];
+      return this.array(arr, false);
+    }
+    bigint(number) {
+      return this.write("bigint:" + number.toString());
+    }
+  }
+  for (const type of [
+    "uint8array",
+    "uint8clampedarray",
+    "unt8array",
+    "uint16array",
+    "unt16array",
+    "uint32array",
+    "unt32array",
+    "float32array",
+    "float64array"
+  ]) {
+    Hasher2.prototype[type] = function(arr) {
+      this.write(type + ":");
+      return this.array([...arr], false);
+    };
+  }
+  function isNativeFunction(f) {
+    if (typeof f !== "function") {
+      return false;
+    }
+    return Function.prototype.toString.call(f).slice(
+      -15
+      /* "[native code] }".length */
+    ) === "[native code] }";
+  }
+  return Hasher2;
+})();
+function serialize(object) {
+  const hasher = new Hasher();
+  hasher.dispatch(object);
+  return hasher.buff;
+}
+function hash(value) {
+  return digest(typeof value === "string" ? value : serialize(value)).replace(/[-_]/g, "").slice(0, 10);
 }
 
 function defaultCacheOptions() {
@@ -314,17 +254,17 @@ function defineCachedFunction(fn, opts = {}) {
   const group = opts.group || "nitro/functions";
   const name = opts.name || fn.name || "_";
   const integrity = opts.integrity || hash([fn, opts]);
-  const validate = opts.validate || ((entry) => entry.value !== undefined);
+  const validate = opts.validate || ((entry) => entry.value !== void 0);
   async function get(key, resolver, shouldInvalidateCache, event) {
     const cacheKey = [opts.base, group, name, key + ".json"].filter(Boolean).join(":").replace(/:\/$/, ":index");
     let entry = await useStorage().getItem(cacheKey).catch((error) => {
-      console.error(`[nitro] [cache] Cache read error.`, error);
+      console.error(`[cache] Cache read error.`, error);
       useNitroApp().captureError(error, { event, tags: ["cache"] });
     }) || {};
     if (typeof entry !== "object") {
       entry = {};
       const error = new Error("Malformed data read from cache.");
-      console.error("[nitro] [cache]", error);
+      console.error("[cache]", error);
       useNitroApp().captureError(error, { event, tags: ["cache"] });
     }
     const ttl = (opts.maxAge ?? 0) * 1e3;
@@ -335,11 +275,11 @@ function defineCachedFunction(fn, opts = {}) {
     const _resolve = async () => {
       const isPending = pending[key];
       if (!isPending) {
-        if (entry.value !== undefined && (opts.staleMaxAge || 0) >= 0 && opts.swr === false) {
-          entry.value = undefined;
-          entry.integrity = undefined;
-          entry.mtime = undefined;
-          entry.expires = undefined;
+        if (entry.value !== void 0 && (opts.staleMaxAge || 0) >= 0 && opts.swr === false) {
+          entry.value = void 0;
+          entry.integrity = void 0;
+          entry.mtime = void 0;
+          entry.expires = void 0;
         }
         pending[key] = Promise.resolve(resolver());
       }
@@ -361,7 +301,7 @@ function defineCachedFunction(fn, opts = {}) {
             setOpts = { ttl: opts.maxAge };
           }
           const promise = useStorage().setItem(cacheKey, entry, setOpts).catch((error) => {
-            console.error(`[nitro] [cache] Cache write error.`, error);
+            console.error(`[cache] Cache write error.`, error);
             useNitroApp().captureError(error, { event, tags: ["cache"] });
           });
           if (event?.waitUntil) {
@@ -371,14 +311,14 @@ function defineCachedFunction(fn, opts = {}) {
       }
     };
     const _resolvePromise = expired ? _resolve() : Promise.resolve();
-    if (entry.value === undefined) {
+    if (entry.value === void 0) {
       await _resolvePromise;
     } else if (expired && event && event.waitUntil) {
       event.waitUntil(_resolvePromise);
     }
     if (opts.swr && validate(entry) !== false) {
       _resolvePromise.catch((error) => {
-        console.error(`[nitro] [cache] SWR handler error.`, error);
+        console.error(`[cache] SWR handler error.`, error);
         useNitroApp().captureError(error, { event, tags: ["cache"] });
       });
       return entry;
@@ -396,7 +336,7 @@ function defineCachedFunction(fn, opts = {}) {
       key,
       () => fn(...args),
       shouldInvalidateCache,
-      args[0] && isEvent(args[0]) ? args[0] : undefined
+      args[0] && isEvent(args[0]) ? args[0] : void 0
     );
     let value = entry.value;
     if (opts.transform) {
@@ -409,7 +349,7 @@ function cachedFunction(fn, opts = {}) {
   return defineCachedFunction(fn, opts);
 }
 function getKey(...args) {
-  return args.length > 0 ? hash(args, {}) : "";
+  return args.length > 0 ? hash(args) : "";
 }
 function escapeKey(key) {
   return String(key).replace(/\W/g, "");
@@ -441,7 +381,7 @@ function defineCachedEventHandler(handler, opts = defaultCacheOptions()) {
       if (entry.value.code >= 400) {
         return false;
       }
-      if (entry.value.body === undefined) {
+      if (entry.value.body === void 0) {
         return false;
       }
       if (entry.value.headers.etag === "undefined" || entry.value.headers["last-modified"] === "undefined") {
@@ -457,7 +397,7 @@ function defineCachedEventHandler(handler, opts = defaultCacheOptions()) {
       const variableHeaders = {};
       for (const header of variableHeaderNames) {
         const value = incomingEvent.node.req.headers[header];
-        if (value !== undefined) {
+        if (value !== void 0) {
           variableHeaders[header] = value;
         }
       }
@@ -508,7 +448,7 @@ function defineCachedEventHandler(handler, opts = defaultCacheOptions()) {
             _resSendBody = chunk;
           }
           if (typeof arg2 === "function") {
-            arg2(undefined);
+            arg2(void 0);
           }
           if (typeof arg3 === "function") {
             arg3();
@@ -523,7 +463,7 @@ function defineCachedEventHandler(handler, opts = defaultCacheOptions()) {
             }
             for (const header in headers2) {
               const value = headers2[header];
-              if (value !== undefined) {
+              if (value !== void 0) {
                 this.setHeader(
                   header,
                   value
@@ -541,6 +481,7 @@ function defineCachedEventHandler(handler, opts = defaultCacheOptions()) {
       event.$fetch = (url, fetchOptions) => fetchWithEvent(event, url, fetchOptions, {
         fetch: globalThis.$fetch
       });
+      event.waitUntil = incomingEvent.waitUntil;
       event.context = incomingEvent.context;
       event.context.cache = {
         options: _opts
@@ -607,7 +548,7 @@ function defineCachedEventHandler(handler, opts = defaultCacheOptions()) {
           splitCookiesString(value)
         );
       } else {
-        if (value !== undefined) {
+        if (value !== void 0) {
           event.node.res.setHeader(name, value);
         }
       }
@@ -659,7 +600,7 @@ function applyEnv(obj, opts, parentKey = "") {
       if (_isObject(envValue)) {
         obj[key] = { ...obj[key], ...envValue };
         applyEnv(obj[key], opts, subKey);
-      } else if (envValue === undefined) {
+      } else if (envValue === void 0) {
         applyEnv(obj[key], opts, subKey);
       } else {
         obj[key] = envValue ?? obj[key];
@@ -673,7 +614,7 @@ function applyEnv(obj, opts, parentKey = "") {
   }
   return obj;
 }
-const envExpandRx = /{{(.*?)}}/g;
+const envExpandRx = /\{\{([^{}]*)\}\}/g;
 function _expandFromEnv(value) {
   return value.replace(envExpandRx, (match, key) => {
     return process.env[key] || match;
@@ -747,13 +688,13 @@ new Proxy(/* @__PURE__ */ Object.create(null), {
     if (prop in runtimeConfig) {
       return runtimeConfig[prop];
     }
-    return undefined;
+    return void 0;
   }
 });
 
 getContext("nitro-app", {
   asyncContext: false,
-  AsyncLocalStorage: undefined
+  AsyncLocalStorage: void 0
 });
 
 const config = useRuntimeConfig();
@@ -814,6 +755,487 @@ function getRouteRulesForPath(path) {
   return defu({}, ..._routeRulesMatcher.matchAll(path).reverse());
 }
 
+function _captureError(error, type) {
+  console.error(`[${type}]`, error);
+  useNitroApp().captureError(error, { tags: [type] });
+}
+function trapUnhandledNodeErrors() {
+  process.on(
+    "unhandledRejection",
+    (error) => _captureError(error, "unhandledRejection")
+  );
+  process.on(
+    "uncaughtException",
+    (error) => _captureError(error, "uncaughtException")
+  );
+}
+function joinHeaders(value) {
+  return Array.isArray(value) ? value.join(", ") : String(value);
+}
+function normalizeFetchResponse(response) {
+  if (!response.headers.has("set-cookie")) {
+    return response;
+  }
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers: normalizeCookieHeaders(response.headers)
+  });
+}
+function normalizeCookieHeader(header = "") {
+  return splitCookiesString(joinHeaders(header));
+}
+function normalizeCookieHeaders(headers) {
+  const outgoingHeaders = new Headers();
+  for (const [name, header] of headers) {
+    if (name === "set-cookie") {
+      for (const cookie of normalizeCookieHeader(header)) {
+        outgoingHeaders.append("set-cookie", cookie);
+      }
+    } else {
+      outgoingHeaders.set(name, joinHeaders(header));
+    }
+  }
+  return outgoingHeaders;
+}
+
+function isJsonRequest(event) {
+  if (hasReqHeader(event, "accept", "text/html")) {
+    return false;
+  }
+  return hasReqHeader(event, "accept", "application/json") || hasReqHeader(event, "user-agent", "curl/") || hasReqHeader(event, "user-agent", "httpie/") || hasReqHeader(event, "sec-fetch-mode", "cors") || event.path.startsWith("/api/") || event.path.endsWith(".json");
+}
+function hasReqHeader(event, name, includes) {
+  const value = getRequestHeader(event, name);
+  return value && typeof value === "string" && value.toLowerCase().includes(includes);
+}
+function normalizeError(error, isDev) {
+  const cwd = typeof process.cwd === "function" ? process.cwd() : "/";
+  const stack = (error.unhandled || error.fatal) ? [] : (error.stack || "").split("\n").splice(1).filter((line) => line.includes("at ")).map((line) => {
+    const text = line.replace(cwd + "/", "./").replace("webpack:/", "").replace("file://", "").trim();
+    return {
+      text,
+      internal: line.includes("node_modules") && !line.includes(".cache") || line.includes("internal") || line.includes("new Promise")
+    };
+  });
+  const statusCode = error.statusCode || 500;
+  const statusMessage = error.statusMessage ?? (statusCode === 404 ? "Not Found" : "");
+  const message = error.unhandled ? "internal server error" : error.message || error.toString();
+  return {
+    stack,
+    statusCode,
+    statusMessage,
+    message
+  };
+}
+
+const errorHandler$0 = (async function errorhandler(error, event) {
+  const { stack, statusCode, statusMessage, message } = normalizeError(error);
+  const errorObject = {
+    url: event.path,
+    statusCode,
+    statusMessage,
+    message,
+    stack: statusCode !== 404 ? `<pre>${stack.map((i) => `<span class="stack${i.internal ? " internal" : ""}">${i.text}</span>`).join("\n")}</pre>` : "",
+    // TODO: check and validate error.data for serialisation into query
+    data: error.data
+  };
+  if (error.unhandled || error.fatal) {
+    const tags = [
+      "[nuxt]",
+      "[request error]",
+      error.unhandled && "[unhandled]",
+      error.fatal && "[fatal]",
+      Number(errorObject.statusCode) !== 200 && `[${errorObject.statusCode}]`
+    ].filter(Boolean).join(" ");
+    console.error(tags, (error.message || error.toString() || "internal server error") + "\n" + stack.map((l) => "  " + l.text).join("  \n"));
+  }
+  if (event.handled) {
+    return;
+  }
+  setResponseStatus(event, errorObject.statusCode !== 200 && errorObject.statusCode || 500, errorObject.statusMessage);
+  if (isJsonRequest(event)) {
+    setResponseHeader(event, "Content-Type", "application/json");
+    return send(event, JSON.stringify(errorObject));
+  }
+  const reqHeaders = getRequestHeaders(event);
+  const isRenderingError = event.path.startsWith("/__nuxt_error") || !!reqHeaders["x-nuxt-error"];
+  const res = isRenderingError ? null : await useNitroApp().localFetch(
+    withQuery(joinURL(useRuntimeConfig(event).app.baseURL, "/__nuxt_error"), errorObject),
+    {
+      headers: { ...reqHeaders, "x-nuxt-error": "true" },
+      redirect: "manual"
+    }
+  ).catch(() => null);
+  if (!res) {
+    const { template } = await Promise.resolve().then(function () { return errorDev; }) ;
+    {
+      errorObject.description = errorObject.message;
+    }
+    if (event.handled) {
+      return;
+    }
+    setResponseHeader(event, "Content-Type", "text/html;charset=UTF-8");
+    return send(event, template(errorObject));
+  }
+  const html = await res.text();
+  if (event.handled) {
+    return;
+  }
+  for (const [header, value] of res.headers.entries()) {
+    setResponseHeader(event, header, value);
+  }
+  setResponseStatus(event, res.status && res.status !== 200 ? res.status : void 0, res.statusText);
+  return send(event, html);
+});
+
+function defineNitroErrorHandler(handler) {
+  return handler;
+}
+
+const errorHandler$1 = defineNitroErrorHandler(
+  async function defaultNitroErrorHandler(error, event) {
+    const res = await defaultHandler(error, event);
+    if (!event.node?.res.headersSent) {
+      setResponseHeaders(event, res.headers);
+    }
+    setResponseStatus(event, res.status, res.statusText);
+    return send(
+      event,
+      typeof res.body === "string" ? res.body : JSON.stringify(res.body, null, 2)
+    );
+  }
+);
+async function defaultHandler(error, event, opts) {
+  const isSensitive = error.unhandled || error.fatal;
+  const statusCode = error.statusCode || 500;
+  const statusMessage = error.statusMessage || "Server Error";
+  const url = getRequestURL(event, { xForwardedHost: true, xForwardedProto: true });
+  if (statusCode === 404) {
+    const baseURL = "/";
+    if (/^\/[^/]/.test(baseURL) && !url.pathname.startsWith(baseURL)) {
+      const redirectTo = `${baseURL}${url.pathname.slice(1)}${url.search}`;
+      return {
+        status: 302,
+        statusText: "Found",
+        headers: { location: redirectTo },
+        body: `Redirecting...`
+      };
+    }
+  }
+  await loadStackTrace(error).catch(consola.error);
+  const youch = new Youch();
+  if (isSensitive && !opts?.silent) {
+    const tags = [error.unhandled && "[unhandled]", error.fatal && "[fatal]"].filter(Boolean).join(" ");
+    const ansiError = await (await youch.toANSI(error)).replaceAll(process.cwd(), ".");
+    consola.error(
+      `[request error] ${tags} [${event.method}] ${url}
+
+`,
+      ansiError
+    );
+  }
+  const useJSON = opts?.json || !getRequestHeader(event, "accept")?.includes("text/html");
+  const headers = {
+    "content-type": useJSON ? "application/json" : "text/html",
+    // Prevent browser from guessing the MIME types of resources.
+    "x-content-type-options": "nosniff",
+    // Prevent error page from being embedded in an iframe
+    "x-frame-options": "DENY",
+    // Prevent browsers from sending the Referer header
+    "referrer-policy": "no-referrer",
+    // Disable the execution of any js
+    "content-security-policy": "script-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self';"
+  };
+  if (statusCode === 404 || !getResponseHeader(event, "cache-control")) {
+    headers["cache-control"] = "no-cache";
+  }
+  const body = useJSON ? {
+    error: true,
+    url,
+    statusCode,
+    statusMessage,
+    message: error.message,
+    data: error.data,
+    stack: error.stack?.split("\n").map((line) => line.trim())
+  } : await youch.toHTML(error, {
+    request: {
+      url: url.href,
+      method: event.method,
+      headers: getRequestHeaders(event)
+    }
+  });
+  return {
+    status: statusCode,
+    statusText: statusMessage,
+    headers,
+    body
+  };
+}
+async function loadStackTrace(error) {
+  if (!(error instanceof Error)) {
+    return;
+  }
+  const parsed = await new ErrorParser().defineSourceLoader(sourceLoader).parse(error);
+  const stack = error.message + "\n" + parsed.frames.map((frame) => fmtFrame(frame)).join("\n");
+  Object.defineProperty(error, "stack", { value: stack });
+  if (error.cause) {
+    await loadStackTrace(error.cause).catch(consola.error);
+  }
+}
+async function sourceLoader(frame) {
+  if (!frame.fileName || frame.fileType !== "fs" || frame.type === "native") {
+    return;
+  }
+  if (frame.type === "app") {
+    const rawSourceMap = await readFile(`${frame.fileName}.map`, "utf8").catch(() => {
+    });
+    if (rawSourceMap) {
+      const consumer = await new SourceMapConsumer(rawSourceMap);
+      const originalPosition = consumer.originalPositionFor({ line: frame.lineNumber, column: frame.columnNumber });
+      if (originalPosition.source && originalPosition.line) {
+        frame.fileName = resolve(dirname(frame.fileName), originalPosition.source);
+        frame.lineNumber = originalPosition.line;
+        frame.columnNumber = originalPosition.column || 0;
+      }
+    }
+  }
+  const contents = await readFile(frame.fileName, "utf8").catch(() => {
+  });
+  return contents ? { contents } : void 0;
+}
+function fmtFrame(frame) {
+  if (frame.type === "native") {
+    return frame.raw;
+  }
+  const src = `${frame.fileName || ""}:${frame.lineNumber}:${frame.columnNumber})`;
+  return frame.functionName ? `at ${frame.functionName} (${src}` : `at ${src}`;
+}
+
+const errorHandlers = [errorHandler$0, errorHandler$1];
+
+async function errorHandler(error, event) {
+  for (const handler of errorHandlers) {
+    try {
+      await handler(error, event, { defaultHandler });
+      if (event.handled) {
+        return; // Response handled
+      }
+    } catch(error) {
+      // Handler itself thrown, log and continue
+      console.error(error);
+    }
+  }
+  // H3 will handle fallback
+}
+
+const script = `
+if (!window.__NUXT_DEVTOOLS_TIME_METRIC__) {
+  Object.defineProperty(window, '__NUXT_DEVTOOLS_TIME_METRIC__', {
+    value: {},
+    enumerable: false,
+    configurable: true,
+  })
+}
+window.__NUXT_DEVTOOLS_TIME_METRIC__.appInit = Date.now()
+`;
+
+const _ElgjGQue3ar00i68zxFS_bSPOPRfZ5o31QZrAYsa58 = (function(nitro) {
+  nitro.hooks.hook("render:html", (htmlContext) => {
+    htmlContext.head.push(`<script>${script}<\/script>`);
+  });
+});
+
+const rootDir = "/Users/vinyasr/Desktop/Complex_System/CodeWave/frontend";
+
+const appHead = {"meta":[{"name":"viewport","content":"width=device-width, initial-scale=1"},{"charset":"utf-8"},{"hid":"description","name":"description","content":"Template to get you up and running with Nuxt 3 & Vuetify 3"},{"property":"og:site_name","content":"Vuetify 3 + Nuxt 3 Starter"},{"hid":"og:type","property":"og:type","content":"website"},{"hid":"og:url","property":"og:url","content":"https://vuetify3nuxt3starter.behonbaker.com/"},{"hid":"og:image:secure_url","property":"og:image:secure_url","content":"https://vuetify3nuxt3starter.behonbaker.com/starter.png"},{"hid":"og:title","property":"og:title","content":"Vuetify 3 + Nuxt 3 Starter"},{"hid":"og:description","property":"og:description","content":"Template to get you up and running with Nuxt 3 & Vuetify 3"},{"hid":"og:image","property":"og:image","content":"https://vuetify3nuxt3starter.behonbaker.com/starter.png"},{"name":"twitter:card","content":"summary_large_image"},{"hid":"twitter:url","name":"twitter:url","content":"https://vuetify3nuxt3starter.behonbaker.com/"},{"hid":"twitter:title","name":"twitter:title","content":"Vuetify 3 + Nuxt 3 Starter"},{"hid":"twitter:description","name":"twitter:description","content":"Template to get you up and running with Nuxt 3 & Vuetify 3"},{"hid":"twitter:image","name":"twitter:image","content":"https://vuetify3nuxt3starter.behonbaker.com/starter.png"}],"link":[{"rel":"stylesheet","href":"https://rsms.me/inter/inter.css"},{"rel":"preconnect","href":"https://rsms.me/"},{"rel":"icon","type":"image/x-icon","href":"/favicon.ico"},{"rel":"canonical","href":"https://vuetify3nuxt3starter.behonbaker.com/"}],"style":[],"script":[],"noscript":[],"title":"Vuetify 3 + Nuxt 3 Starter","titleTemplate":"%s | Vuetify 3 + Nuxt 3 Starter"};
+
+const appRootTag = "div";
+
+const appRootAttrs = {"id":"__nuxt"};
+
+const appTeleportTag = "div";
+
+const appTeleportAttrs = {"id":"teleports"};
+
+const appId = "nuxt-app";
+
+const devReducers = {
+  VNode: (data) => isVNode(data) ? { type: data.type, props: data.props } : void 0,
+  URL: (data) => data instanceof URL ? data.toString() : void 0
+};
+const asyncContext = getContext("nuxt-dev", { asyncContext: true, AsyncLocalStorage });
+const _TAYKfgQ1ad3FH58DKpcIXljkJTVW0ja2xaU7uBYRwU = (nitroApp) => {
+  const handler = nitroApp.h3App.handler;
+  nitroApp.h3App.handler = (event) => {
+    return asyncContext.callAsync({ logs: [], event }, () => handler(event));
+  };
+  onConsoleLog((_log) => {
+    const ctx = asyncContext.tryUse();
+    if (!ctx) {
+      return;
+    }
+    const rawStack = captureRawStackTrace();
+    if (!rawStack || rawStack.includes("runtime/vite-node.mjs")) {
+      return;
+    }
+    const trace = [];
+    let filename = "";
+    for (const entry of parseRawStackTrace(rawStack)) {
+      if (entry.source === globalThis._importMeta_.url) {
+        continue;
+      }
+      if (EXCLUDE_TRACE_RE.test(entry.source)) {
+        continue;
+      }
+      filename ||= entry.source.replace(withTrailingSlash(rootDir), "");
+      trace.push({
+        ...entry,
+        source: entry.source.startsWith("file://") ? entry.source.replace("file://", "") : entry.source
+      });
+    }
+    const log = {
+      ..._log,
+      // Pass along filename to allow the client to display more info about where log comes from
+      filename,
+      // Clean up file names in stack trace
+      stack: trace
+    };
+    ctx.logs.push(log);
+  });
+  nitroApp.hooks.hook("afterResponse", () => {
+    const ctx = asyncContext.tryUse();
+    if (!ctx) {
+      return;
+    }
+    return nitroApp.hooks.callHook("dev:ssr-logs", { logs: ctx.logs, path: ctx.event.path });
+  });
+  nitroApp.hooks.hook("render:html", (htmlContext) => {
+    const ctx = asyncContext.tryUse();
+    if (!ctx) {
+      return;
+    }
+    try {
+      const reducers = Object.assign(/* @__PURE__ */ Object.create(null), devReducers, ctx.event.context._payloadReducers);
+      htmlContext.bodyAppend.unshift(`<script type="application/json" data-nuxt-logs="${appId}">${stringify(ctx.logs, reducers)}<\/script>`);
+    } catch (e) {
+      const shortError = e instanceof Error && "toString" in e ? ` Received \`${e.toString()}\`.` : "";
+      console.warn(`[nuxt] Failed to stringify dev server logs.${shortError} You can define your own reducer/reviver for rich types following the instructions in https://nuxt.com/docs/api/composables/use-nuxt-app#payload.`);
+    }
+  });
+};
+const EXCLUDE_TRACE_RE = /\/node_modules\/(?:.*\/)?(?:nuxt|nuxt-nightly|nuxt-edge|nuxt3|consola|@vue)\/|core\/runtime\/nitro/;
+function onConsoleLog(callback) {
+  consola$1.addReporter({
+    log(logObj) {
+      callback(logObj);
+    }
+  });
+  consola$1.wrapConsole();
+}
+
+const plugins = [
+  _ElgjGQue3ar00i68zxFS_bSPOPRfZ5o31QZrAYsa58,
+_TAYKfgQ1ad3FH58DKpcIXljkJTVW0ja2xaU7uBYRwU
+];
+
+const assets = {};
+
+function readAsset (id) {
+  const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
+  return promises.readFile(resolve$1(serverDir, assets[id].path))
+}
+
+const publicAssetBases = {"/_nuxt/builds/meta/":{"maxAge":31536000},"/_nuxt/builds/":{"maxAge":1}};
+
+function isPublicAssetURL(id = '') {
+  if (assets[id]) {
+    return true
+  }
+  for (const base in publicAssetBases) {
+    if (id.startsWith(base)) { return true }
+  }
+  return false
+}
+
+function getAsset (id) {
+  return assets[id]
+}
+
+const METHODS = /* @__PURE__ */ new Set(["HEAD", "GET"]);
+const EncodingMap = { gzip: ".gz", br: ".br" };
+const _8Z8LjF = eventHandler((event) => {
+  if (event.method && !METHODS.has(event.method)) {
+    return;
+  }
+  let id = decodePath(
+    withLeadingSlash(withoutTrailingSlash(parseURL(event.path).pathname))
+  );
+  let asset;
+  const encodingHeader = String(
+    getRequestHeader(event, "accept-encoding") || ""
+  );
+  const encodings = [
+    ...encodingHeader.split(",").map((e) => EncodingMap[e.trim()]).filter(Boolean).sort(),
+    ""
+  ];
+  if (encodings.length > 1) {
+    appendResponseHeader(event, "Vary", "Accept-Encoding");
+  }
+  for (const encoding of encodings) {
+    for (const _id of [id + encoding, joinURL(id, "index.html" + encoding)]) {
+      const _asset = getAsset(_id);
+      if (_asset) {
+        asset = _asset;
+        id = _id;
+        break;
+      }
+    }
+  }
+  if (!asset) {
+    if (isPublicAssetURL(id)) {
+      removeResponseHeader(event, "Cache-Control");
+      throw createError({ statusCode: 404 });
+    }
+    return;
+  }
+  const ifNotMatch = getRequestHeader(event, "if-none-match") === asset.etag;
+  if (ifNotMatch) {
+    setResponseStatus(event, 304, "Not Modified");
+    return "";
+  }
+  const ifModifiedSinceH = getRequestHeader(event, "if-modified-since");
+  const mtimeDate = new Date(asset.mtime);
+  if (ifModifiedSinceH && asset.mtime && new Date(ifModifiedSinceH) >= mtimeDate) {
+    setResponseStatus(event, 304, "Not Modified");
+    return "";
+  }
+  if (asset.type && !getResponseHeader(event, "Content-Type")) {
+    setResponseHeader(event, "Content-Type", asset.type);
+  }
+  if (asset.etag && !getResponseHeader(event, "ETag")) {
+    setResponseHeader(event, "ETag", asset.etag);
+  }
+  if (asset.mtime && !getResponseHeader(event, "Last-Modified")) {
+    setResponseHeader(event, "Last-Modified", mtimeDate.toUTCString());
+  }
+  if (asset.encoding && !getResponseHeader(event, "Content-Encoding")) {
+    setResponseHeader(event, "Content-Encoding", asset.encoding);
+  }
+  if (asset.size > 0 && !getResponseHeader(event, "Content-Length")) {
+    setResponseHeader(event, "Content-Length", asset.size);
+  }
+  return readAsset(id);
+});
+
+const _lazy_ABLOxC = () => Promise.resolve().then(function () { return renderer$1; });
+
+const handlers = [
+  { route: '', handler: _8Z8LjF, lazy: false, middleware: true, method: undefined },
+  { route: '/__nuxt_error', handler: _lazy_ABLOxC, lazy: true, middleware: false, method: undefined },
+  { route: '/**', handler: _lazy_ABLOxC, lazy: true, middleware: false, method: undefined }
+];
+
 function createNitroApp() {
   const config = useRuntimeConfig();
   const hooks = createHooks();
@@ -838,6 +1260,35 @@ function createNitroApp() {
       return errorHandler(error, event);
     },
     onRequest: async (event) => {
+      event.context.nitro = event.context.nitro || { errors: [] };
+      const fetchContext = event.node.req?.__unenv__;
+      if (fetchContext?._platform) {
+        event.context = {
+          _platform: fetchContext?._platform,
+          // #3335
+          ...fetchContext._platform,
+          ...event.context
+        };
+      }
+      if (!event.context.waitUntil && fetchContext?.waitUntil) {
+        event.context.waitUntil = fetchContext.waitUntil;
+      }
+      event.fetch = (req, init) => fetchWithEvent(event, req, init, { fetch: localFetch });
+      event.$fetch = (req, init) => fetchWithEvent(event, req, init, {
+        fetch: $fetch
+      });
+      event.waitUntil = (promise) => {
+        if (!event.context.nitro._waitUntilPromises) {
+          event.context.nitro._waitUntilPromises = [];
+        }
+        event.context.nitro._waitUntilPromises.push(promise);
+        if (event.context.waitUntil) {
+          event.context.waitUntil(promise);
+        }
+      };
+      event.captureError = (error, context) => {
+        captureError(error, { event, ...context });
+      };
       await nitroApp$1.hooks.callHook("request", event).catch((error) => {
         captureError(error, { event, tags: ["request"] });
       });
@@ -856,43 +1307,28 @@ function createNitroApp() {
   const router = createRouter$1({
     preemptive: true
   });
-  const localCall = createCall(toNodeListener(h3App));
-  const _localFetch = createFetch(localCall, globalThis.fetch);
-  const localFetch = (input, init) => _localFetch(input, init).then(
-    (response) => normalizeFetchResponse(response)
+  const nodeHandler = toNodeListener(h3App);
+  const localCall = (aRequest) => callNodeRequestHandler(
+    nodeHandler,
+    aRequest
   );
-  const $fetch = createFetch$1({
+  const localFetch = (input, init) => {
+    if (!input.toString().startsWith("/")) {
+      return globalThis.fetch(input, init);
+    }
+    return fetchNodeRequestHandler(
+      nodeHandler,
+      input,
+      init
+    ).then((response) => normalizeFetchResponse(response));
+  };
+  const $fetch = createFetch({
     fetch: localFetch,
     Headers: Headers$1,
     defaults: { baseURL: config.app.baseURL }
   });
   globalThis.$fetch = $fetch;
   h3App.use(createRouteRulesHandler({ localFetch }));
-  h3App.use(
-    eventHandler((event) => {
-      event.context.nitro = event.context.nitro || { errors: [] };
-      const envContext = event.node.req?.__unenv__;
-      if (envContext) {
-        Object.assign(event.context, envContext);
-      }
-      event.fetch = (req, init) => fetchWithEvent(event, req, init, { fetch: localFetch });
-      event.$fetch = (req, init) => fetchWithEvent(event, req, init, {
-        fetch: $fetch
-      });
-      event.waitUntil = (promise) => {
-        if (!event.context.nitro._waitUntilPromises) {
-          event.context.nitro._waitUntilPromises = [];
-        }
-        event.context.nitro._waitUntilPromises.push(promise);
-        if (envContext?.waitUntil) {
-          envContext.waitUntil(promise);
-        }
-      };
-      event.captureError = (error, context) => {
-        captureError(error, { event, ...context });
-      };
-    })
-  );
   for (const h of handlers) {
     let handler = h.lazy ? lazyEventHandler(h.handler) : h.handler;
     if (h.middleware || !h.route) {
@@ -945,7 +1381,7 @@ function defineRenderHandler(render) {
   const runtimeConfig = useRuntimeConfig();
   return eventHandler(async (event) => {
     const nitroApp = useNitroApp();
-    const ctx = { event, render, response: undefined };
+    const ctx = { event, render, response: void 0 };
     await nitroApp.hooks.callHook("render:before", ctx);
     if (!ctx.response) {
       if (event.path === `${runtimeConfig.app.baseURL}favicon.ico`) {
@@ -979,8 +1415,6 @@ function defineRenderHandler(render) {
     return ctx.response.body;
   });
 }
-
-const r=Object.create(null),i=e=>globalThis.process?.env||globalThis._importMeta_.env||globalThis.Deno?.env.toObject()||globalThis.__env__||(e?r:globalThis),s=new Proxy(r,{get(e,o){return i()[o]??r[o]},has(e,o){const E=i();return o in E||o in r},set(e,o,E){const b=i(true);return b[o]=E,true},deleteProperty(e,o){if(!o)return  false;const E=i(true);return delete E[o],true},ownKeys(){const e=i(true);return Object.keys(e)}}),t=typeof process<"u"&&process.env&&"development"||"",B=[["APPVEYOR"],["AWS_AMPLIFY","AWS_APP_ID",{ci:true}],["AZURE_PIPELINES","SYSTEM_TEAMFOUNDATIONCOLLECTIONURI"],["AZURE_STATIC","INPUT_AZURE_STATIC_WEB_APPS_API_TOKEN"],["APPCIRCLE","AC_APPCIRCLE"],["BAMBOO","bamboo_planKey"],["BITBUCKET","BITBUCKET_COMMIT"],["BITRISE","BITRISE_IO"],["BUDDY","BUDDY_WORKSPACE_ID"],["BUILDKITE"],["CIRCLE","CIRCLECI"],["CIRRUS","CIRRUS_CI"],["CLOUDFLARE_PAGES","CF_PAGES",{ci:true}],["CODEBUILD","CODEBUILD_BUILD_ARN"],["CODEFRESH","CF_BUILD_ID"],["DRONE"],["DRONE","DRONE_BUILD_EVENT"],["DSARI"],["GITHUB_ACTIONS"],["GITLAB","GITLAB_CI"],["GITLAB","CI_MERGE_REQUEST_ID"],["GOCD","GO_PIPELINE_LABEL"],["LAYERCI"],["HUDSON","HUDSON_URL"],["JENKINS","JENKINS_URL"],["MAGNUM"],["NETLIFY"],["NETLIFY","NETLIFY_LOCAL",{ci:false}],["NEVERCODE"],["RENDER"],["SAIL","SAILCI"],["SEMAPHORE"],["SCREWDRIVER"],["SHIPPABLE"],["SOLANO","TDDIUM"],["STRIDER"],["TEAMCITY","TEAMCITY_VERSION"],["TRAVIS"],["VERCEL","NOW_BUILDER"],["VERCEL","VERCEL",{ci:false}],["VERCEL","VERCEL_ENV",{ci:false}],["APPCENTER","APPCENTER_BUILD_ID"],["CODESANDBOX","CODESANDBOX_SSE",{ci:false}],["STACKBLITZ"],["STORMKIT"],["CLEAVR"],["ZEABUR"],["CODESPHERE","CODESPHERE_APP_ID",{ci:true}],["RAILWAY","RAILWAY_PROJECT_ID"],["RAILWAY","RAILWAY_SERVICE_ID"],["DENO-DEPLOY","DENO_DEPLOYMENT_ID"],["FIREBASE_APP_HOSTING","FIREBASE_APP_HOSTING",{ci:true}]];function p(){if(globalThis.process?.env)for(const e of B){const o=e[1]||e[0];if(globalThis.process?.env[o])return {name:e[0].toLowerCase(),...e[2]}}return globalThis.process?.env?.SHELL==="/bin/jsh"&&globalThis.process?.versions?.webcontainer?{name:"stackblitz",ci:false}:{name:"",ci:false}}const l=p(),d=l.name;function n(e){return e?e!=="false":false}const I=globalThis.process?.platform||"",T=n(s.CI)||l.ci!==false,R=n(globalThis.process?.stdout&&globalThis.process?.stdout.isTTY);n(s.DEBUG);const A=t==="test"||n(s.TEST);n(s.MINIMAL)||T||A||!R;const _=/^win/i.test(I);!n(s.NO_COLOR)&&(n(s.FORCE_COLOR)||(R||_)&&s.TERM!=="dumb"||T);const C=(globalThis.process?.versions?.node||"").replace(/^v/,"")||null;Number(C?.split(".")[0])||null;const y=globalThis.process||Object.create(null),c={versions:{}};new Proxy(y,{get(e,o){if(o==="env")return s;if(o in e)return e[o];if(o in c)return c[o]}});const L=globalThis.process?.release?.name==="node",a=!!globalThis.Bun||!!globalThis.process?.versions?.bun,D=!!globalThis.Deno,O=!!globalThis.fastly,S=!!globalThis.Netlify,N=!!globalThis.EdgeRuntime,P=globalThis.navigator?.userAgent==="Cloudflare-Workers",F=[[S,"netlify"],[N,"edge-light"],[P,"workerd"],[O,"fastly"],[D,"deno"],[a,"bun"],[L,"node"]];function G(){const e=F.find(o=>o[0]);if(e)return {name:e[1]}}const u=G();u?.name||"";
 
 const scheduledTasks = false;
 
@@ -1019,27 +1453,25 @@ async function runTask(name, {
   }
 }
 
+if (!globalThis.crypto) {
+  globalThis.crypto = nodeCrypto;
+}
+const { NITRO_NO_UNIX_SOCKET, NITRO_DEV_WORKER_ID } = process.env;
+trapUnhandledNodeErrors();
+parentPort?.on("message", (msg) => {
+  if (msg && msg.event === "shutdown") {
+    shutdown();
+  }
+});
 const nitroApp = useNitroApp();
 const server = new Server(toNodeListener(nitroApp.h3App));
-function getAddress() {
-  if (d === "stackblitz" || process.env.NITRO_NO_UNIX_SOCKET || process.versions.bun) {
-    return 0;
-  }
-  const socketName = `worker-${process.pid}-${threadId}.sock`;
-  if (_) {
-    return join(String.raw`\\.\pipe\nitro`, socketName);
-  }
-  const socketDir = join(tmpdir(), "nitro");
-  mkdirSync(socketDir, { recursive: true });
-  return join(socketDir, socketName);
-}
-const listenAddress = getAddress();
-server.listen(listenAddress, () => {
-  const _address = server.address();
-  parentPort?.postMessage({
-    event: "listen",
-    address: typeof _address === "string" ? { socketPath: _address } : { host: "localhost", port: _address?.port }
-  });
+let listener;
+listen().catch(() => listen(
+  true
+  /* use random port */
+)).catch((error) => {
+  console.error("Dev worker failed to listen:", error);
+  return shutdown();
 });
 nitroApp.router.get(
   "/_nitro/tasks",
@@ -1067,16 +1499,45 @@ nitroApp.router.use(
     return await runTask(name, { payload });
   })
 );
-trapUnhandledNodeErrors();
-async function onShutdown(signal) {
-  await nitroApp.hooks.callHook("close");
+function listen(useRandomPort = Boolean(
+  NITRO_NO_UNIX_SOCKET || process.versions.webcontainer || "Bun" in globalThis && process.platform === "win32"
+)) {
+  return new Promise((resolve, reject) => {
+    try {
+      listener = server.listen(useRandomPort ? 0 : getSocketAddress(), () => {
+        const address = server.address();
+        parentPort?.postMessage({
+          event: "listen",
+          address: typeof address === "string" ? { socketPath: address } : { host: "localhost", port: address?.port }
+        });
+        resolve();
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
 }
-parentPort?.on("message", async (msg) => {
-  if (msg && msg.event === "shutdown") {
-    await onShutdown();
-    parentPort?.postMessage({ event: "exit" });
+function getSocketAddress() {
+  const socketName = `nitro-worker-${process.pid}-${threadId}-${NITRO_DEV_WORKER_ID}-${Math.round(Math.random() * 1e4)}.sock`;
+  if (process.platform === "win32") {
+    return join(String.raw`\\.\pipe`, socketName);
   }
-});
+  if (process.platform === "linux") {
+    const nodeMajor = Number.parseInt(process.versions.node.split(".")[0], 10);
+    if (nodeMajor >= 20) {
+      return `\0${socketName}`;
+    }
+  }
+  return join(tmpdir(), socketName);
+}
+async function shutdown() {
+  server.closeAllConnections?.();
+  await Promise.all([
+    new Promise((resolve) => listener?.close(resolve)),
+    nitroApp.hooks.callHook("close").catch(console.error)
+  ]);
+  parentPort?.postMessage({ event: "exit" });
+}
 
 const _messages = { "appName": "Nuxt", "version": "", "statusCode": 500, "statusMessage": "Server error", "description": "An error occurred in the application and the page could not be served. If you are the application owner, check your server logs for details.", "stack": "" };
 const template$1 = (messages) => {
@@ -1166,8 +1627,8 @@ function publicAssetsURL(...path) {
 
 globalThis.__buildAssetsURL = buildAssetsURL;
 globalThis.__publicAssetsURL = publicAssetsURL;
-const getClientManifest = () => import('file:///Users/pouyamohammadkhani/Desktop/UCC/Complex%20system%20design/CodeWave/frontend/.nuxt/dist/server/client.manifest.mjs').then((r) => r.default || r).then((r) => typeof r === "function" ? r() : r);
-const getServerEntry = () => import('file:///Users/pouyamohammadkhani/Desktop/UCC/Complex%20system%20design/CodeWave/frontend/.nuxt/dist/server/server.mjs').then((r) => r.default || r);
+const getClientManifest = () => import('file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/.nuxt/dist/server/client.manifest.mjs').then((r) => r.default || r).then((r) => typeof r === "function" ? r() : r);
+const getServerEntry = () => import('file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/.nuxt/dist/server/server.mjs').then((r) => r.default || r);
 const getSSRStyles = lazyCachedFunction(() => Promise.resolve().then(function () { return styles$1; }).then((r) => r.default || r));
 const getSSRRenderer = lazyCachedFunction(async () => {
   const manifest = await getClientManifest();
@@ -1227,7 +1688,7 @@ const ISLAND_SUFFIX_RE = /\.json(\?.*)?$/;
 async function getIslandContext(event) {
   let url = event.path || "";
   const componentParts = url.substring("/__nuxt_island".length + 1).replace(ISLAND_SUFFIX_RE, "").split("_");
-  const hashId = componentParts.length > 1 ? componentParts.pop() : undefined;
+  const hashId = componentParts.length > 1 ? componentParts.pop() : void 0;
   const componentName = componentParts.join("_");
   const context = event.method === "GET" ? getQuery$1(event) : await readBody(event);
   const ctx = {
@@ -1261,7 +1722,7 @@ const renderer = defineRenderHandler(async (event) => {
     });
   }
   const isRenderingIsland = event.path.startsWith("/__nuxt_island");
-  const islandContext = isRenderingIsland ? await getIslandContext(event) : undefined;
+  const islandContext = isRenderingIsland ? await getIslandContext(event) : void 0;
   let url = ssrError?.url || islandContext?.url || event.path;
   const isRenderingPayload = PAYLOAD_URL_RE.test(url) && !isRenderingIsland;
   if (isRenderingPayload) {
@@ -1284,7 +1745,7 @@ const renderer = defineRenderHandler(async (event) => {
     noSSR: event.context.nuxt?.noSSR || routeOptions.ssr === false && !isRenderingIsland || (false),
     head,
     error: !!ssrError,
-    nuxt: undefined,
+    nuxt: void 0,
     /* NuxtApp */
     payload: ssrError ? { error: ssrError } : {},
     _payloadReducers: /* @__PURE__ */ Object.create(null),
@@ -1512,7 +1973,7 @@ const SSR_CLIENT_TELEPORT_MARKER = /^uid=([^;]*);client=(.*)$/;
 const SSR_CLIENT_SLOT_MARKER = /^island-slot=[^;]*;(.*)$/;
 function getSlotIslandResponse(ssrContext) {
   if (!ssrContext.islandContext || !Object.keys(ssrContext.islandContext.slots).length) {
-    return undefined;
+    return void 0;
   }
   const response = {};
   for (const [name, slot] of Object.entries(ssrContext.islandContext.slots)) {
@@ -1525,7 +1986,7 @@ function getSlotIslandResponse(ssrContext) {
 }
 function getClientIslandResponse(ssrContext) {
   if (!ssrContext.islandContext || !Object.keys(ssrContext.islandContext.components).length) {
-    return undefined;
+    return void 0;
   }
   const response = {};
   for (const [clientUid, component] of Object.entries(ssrContext.islandContext.components)) {
