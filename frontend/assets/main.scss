@@ -1,5 +1,5 @@
-$family: "Inter var", "Inter", apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans,
-  Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+$family: "Inter var", "Inter", apple-system, BlinkMacSystemFont, "Segoe UI",
+  Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 
 @use "vuetify" with (
   $body-font-family: $family
@@ -7,6 +7,13 @@ $family: "Inter var", "Inter", apple-system, BlinkMacSystemFont, "Segoe UI", Rob
 
 :root {
   font-family: "Inter", sans-serif;
+  // App color tokens
+  --color-primary: #1e90ff; // primary blue
+  --color-text-light: #ffffff;
+  --color-text-muted: #d1d5db;
+  --color-card-fg: #e5e7eb;
+  --color-overlay: rgba(0, 0, 0, 0.65);
+  --color-field-bg: rgba(0, 0, 0, 0.6);
 }
 @supports (font-variation-settings: normal) {
   :root {

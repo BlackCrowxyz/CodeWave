@@ -5,7 +5,9 @@
         <VRow no-gutters align="center" justify="center">
           <VCol cols="12" md="6">
             <h1>Sign Up</h1>
-            <p class="text-medium-emphasis">Enter your details to get started</p>
+            <p class="text-medium-emphasis">
+              Enter your details to get started
+            </p>
 
             <VForm @submit.prevent="submit" class="mt-7">
               <div>
@@ -19,7 +21,9 @@
                 />
               </div>
               <div class="mt-1">
-                <label class="label text-grey-darken-2" for="email">Email</label>
+                <label class="label text-grey-darken-2" for="email"
+                  >Email</label
+                >
                 <VTextField
                   :rules="[ruleRequired, ruleEmail]"
                   v-model="email"
@@ -30,7 +34,9 @@
                 />
               </div>
               <div class="mt-1">
-                <label class="label text-grey-darken-2" for="password">Password</label>
+                <label class="label text-grey-darken-2" for="password"
+                  >Password</label
+                >
                 <VTextField
                   :rules="[ruleRequired, rulePassLen]"
                   type="password"
@@ -41,7 +47,11 @@
                 />
               </div>
               <div class="mt-5">
-                <VBtn type="submit" block min-height="45" class="gradient primary"
+                <VBtn
+                  type="submit"
+                  block
+                  min-height="45"
+                  class="gradient primary"
                   >Create Account</VBtn
                 >
               </div>
@@ -49,7 +59,9 @@
             <p class="text-body-2 mt-10">
               <span
                 >Already have an account?
-                <NuxtLink to="/" class="font-weight-bold text-primary">Sign In</NuxtLink></span
+                <NuxtLink to="/signin" class="font-weight-bold text-primary"
+                  >Sign In</NuxtLink
+                ></span
               >
             </p>
           </VCol>
@@ -64,9 +76,10 @@
           <div class="text-center w-50 text-white mx-auto">
             <h2 class="mb-4">Start your journey today</h2>
             <p>
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Asperiores, inventore quia.
-              Dolorum dolores ad ipsum voluptatum rem, hic placeat, odio, odit numquam quod
-              veritatis accusantium assumenda! Sequi, provident in! Iure!
+              Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+              Asperiores, inventore quia. Dolorum dolores ad ipsum voluptatum
+              rem, hic placeat, odio, odit numquam quod veritatis accusantium
+              assumenda! Sequi, provident in! Iure!
             </p>
           </div>
         </VImg>
