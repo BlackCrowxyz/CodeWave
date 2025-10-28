@@ -1,155 +1,337 @@
 <template>
-  <VContainer fluid class="fill-height">
-    <VRow no-gutters align="center" justify="center" class="fill-height">
-      <VCol cols="12" md="6" lg="5" sm="6">
-        <VRow no-gutters align="center" justify="center">
-          <VCol cols="12" md="6">
-            <h1>Sign Up</h1>
-            <p class="text-medium-emphasis">
-              Enter your details to get started
-            </p>
+  <div class="signup-page">
+    <VImg src="/assets/landing-bg.jpeg" cover class="bg-image" />
 
-            <VForm @submit.prevent="submit" class="mt-7">
-              <div>
-                <label class="label text-grey-darken-2" for="name">Name</label>
-                <VTextField
-                  :rules="[ruleRequired]"
-                  v-model="name"
-                  prepend-inner-icon="fluent:person-24-regular"
-                  id="name"
-                  name="name"
-                />
-              </div>
-              <div class="mt-1">
-                <label class="label text-grey-darken-2" for="email"
-                  >Email</label
-                >
-                <VTextField
-                  :rules="[ruleRequired, ruleEmail]"
-                  v-model="email"
-                  type="email"
-                  prepend-inner-icon="fluent:mail-24-regular"
-                  id="email"
-                  name="email"
-                />
-              </div>
-              <div class="mt-1">
-                <label class="label text-grey-darken-2" for="password"
-                  >Password</label
-                >
-                <VTextField
-                  :rules="[ruleRequired, rulePassLen]"
-                  type="password"
-                  v-model="password"
-                  prepend-inner-icon="fluent:password-20-regular"
-                  id="password"
-                  name="password"
-                />
-              </div>
-              <div class="mt-5">
-                <VBtn
-                  type="submit"
-                  block
-                  min-height="45"
-                  class="gradient primary"
-                  :loading="loading"
-                  :disabled="loading"
-                  >{{ loading ? 'Creating Account...' : 'Create Account' }}</VBtn
-                >
-              </div>
-            </VForm>
-            
-            <!-- Error Message -->
-            <VAlert
-              v-if="errorMessage"
-              type="error"
-              class="mt-4"
-              :text="errorMessage"
-              variant="outlined"
-            />
-            <p class="text-body-2 mt-10">
-              <span
-                >Already have an account?
-                <NuxtLink to="/signin" class="font-weight-bold text-primary"
-                  >Sign In</NuxtLink
-                ></span
+    <div class="topbar">
+      <NuxtLink to="/signin">
+        <VBtn class="sign-in-btn" size="large">Sign In</VBtn>
+      </NuxtLink>
+    </div>
+
+    <div class="content">
+      <div class="left">
+        <div class="brand">TripWave</div>
+        <div class="byline">Designed by CodeWave Group</div>
+      </div>
+
+      <div class="right">
+        <h1 class="tagline">Create Your Account</h1>
+        <p class="sub">
+          Ready to start your journey?<br />Fill in your details below.
+        </p>
+
+        <div class="form-container">
+          <VForm @submit.prevent="submit">
+            <div class="form-fields">
+              <VTextField
+                v-model="email"
+                :rules="[ruleRequired, ruleEmail]"
+                label="Email address"
+                type="email"
+                variant="solo"
+                hide-details="auto"
+                density="comfortable"
+                size="large"
+                class="form-field"
+              />
+
+              <VTextField
+                v-model="name"
+                :rules="[ruleRequired]"
+                label="Name"
+                variant="solo"
+                hide-details="auto"
+                density="comfortable"
+                size="large"
+                class="form-field"
+              />
+
+              <VTextField
+                v-model="password"
+                :rules="[ruleRequired, rulePassLen]"
+                label="Password"
+                type="password"
+                variant="solo"
+                hide-details="auto"
+                density="comfortable"
+                size="large"
+                class="form-field"
+              />
+
+              <VTextField
+                v-model="confirmPassword"
+                :rules="[ruleRequired, rulePasswordMatch]"
+                label="Confirm Password"
+                type="password"
+                variant="solo"
+                hide-details="auto"
+                density="comfortable"
+                size="large"
+                class="form-field"
+              />
+
+              <VBtn
+                type="submit"
+                class="primary-btn"
+                size="large"
+                :loading="isLoading"
               >
-            </p>
-          </VCol>
-        </VRow>
-      </VCol>
-      <VCol class="hidden-md-and-down fill-height" md="6" lg="7">
-        <VImg
-          src="https://wallpaper.dog/large/5557744.jpg"
-          cover
-          class="h-100 rounded-xl d-flex align-center justify-center"
-        >
-          <div class="text-center w-50 text-white mx-auto">
-            <h2 class="mb-4">Start your journey today</h2>
-            <p>
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-              Asperiores, inventore quia. Dolorum dolores ad ipsum voluptatum
-              rem, hic placeat, odio, odit numquam quod veritatis accusantium
-              assumenda! Sequi, provident in! Iure!
-            </p>
-          </div>
-        </VImg>
-      </VCol>
-    </VRow>
-  </VContainer>
+                Sign Up
+              </VBtn>
+            </div>
+          </VForm>
+
+          <VAlert
+            v-if="emailChecked && emailExists"
+            type="warning"
+            variant="tonal"
+            class="mt-3"
+          >
+            This email already has an account. Please
+            <NuxtLink to="/signin" class="font-weight-bold text-primary">
+              sign in
+            </NuxtLink>
+            .
+          </VAlert>
+
+          <p class="helper mt-3">
+            Already have an account?
+            <NuxtLink to="/signin" class="link">Sign In</NuxtLink>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
-// Redirect to dashboard if already authenticated
-definePageMeta({
-  middleware: 'guest'
-})
+const runtimeConfig = useRuntimeConfig();
+const API_BASE = `${
+  runtimeConfig.public?.apiBase || "http://localhost:3001"
+}/api/v1`;
+
+const route = useRoute();
+const router = useRouter();
 
 const name = ref("");
-const email = ref("");
+const email = ref(route.query.email || "");
 const password = ref("");
-const loading = ref(false);
-const errorMessage = ref("");
+const confirmPassword = ref("");
 
-// Pre-fill email from query parameter if provided
-const route = useRoute()
-onMounted(() => {
-  if (route.query.email && typeof route.query.email === 'string') {
-    email.value = route.query.email
-  }
-})
+const emailChecked = ref(false);
+const emailExists = ref(false);
+const isLoading = ref(false);
 
 const { ruleEmail, rulePassLen, ruleRequired } = useFormRules();
-const { signup } = useApi();
+
+const rulePasswordMatch = (value) => {
+  return value === password.value || "Passwords do not match";
+};
+
+function validateField(rules, value) {
+  for (const rule of rules) {
+    const result = rule(value);
+    if (result !== true) return false;
+  }
+  return true;
+}
+
+// Check email existence on mount if email is pre-filled
+onMounted(async () => {
+  if (email.value) {
+    try {
+      const res = await fetch(
+        `${API_BASE}/users/email/${encodeURIComponent(email.value)}`
+      );
+      const json = await res.json();
+      emailExists.value = Boolean(json?.data?.exists);
+      emailChecked.value = true;
+    } catch (e) {
+      console.error("Error checking email:", e);
+    }
+  }
+});
 
 const submit = async () => {
-  if (!name.value || !email.value || !password.value) {
-    errorMessage.value = "Please fill in all fields";
+  // Validate all fields
+  if (!validateField([ruleRequired, ruleEmail], email.value)) return;
+  if (!validateField([ruleRequired], name.value)) return;
+  if (!validateField([ruleRequired, rulePassLen], password.value)) return;
+  if (!validateField([ruleRequired, rulePasswordMatch], confirmPassword.value))
     return;
+
+  // Check if email exists
+  emailChecked.value = true;
+  try {
+    const res = await fetch(
+      `${API_BASE}/users/email/${encodeURIComponent(email.value)}`
+    );
+    const json = await res.json();
+    emailExists.value = Boolean(json?.data?.exists);
+
+    if (emailExists.value) {
+      return; // Don't proceed if email exists
+    }
+  } catch (e) {
+    console.error("Error checking email:", e);
   }
 
-  loading.value = true;
-  errorMessage.value = "";
+  isLoading.value = true;
 
   try {
-    const response = await signup(name.value, email.value, password.value);
-    
-    if (response.status === 201 && response.data) {
-      // Store authentication data
-      localStorage.setItem('accessToken', response.data.accessToken);
-      localStorage.setItem('userId', response.data.userId);
-      localStorage.setItem('userName', response.data.name);
-      localStorage.setItem('userEmail', response.data.email);
-      localStorage.setItem('userRole', response.data.role);
-      
-      // Navigate to dashboard or home page
-      await navigateTo('/dashboard');
+    const body = {
+      name: name.value,
+      email: email.value,
+      password: password.value,
+    };
+
+    const response = await fetch(`${API_BASE}/signup`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      // Store token if available
+      if (result.data?.accessToken) {
+        localStorage.setItem("auth_token", result.data.accessToken);
+        localStorage.setItem("user", JSON.stringify(result.data));
+      }
+
+      // Redirect to dashboard
+      router.push("/dashboard");
+    } else {
+      console.error("Signup failed:", result.message);
+      alert(result.message || "Signup failed. Please try again.");
     }
   } catch (error) {
-    console.error('Signup error:', error);
-    errorMessage.value = error.message || 'Sign up failed. Please try again.';
+    console.error("Signup error:", error);
+    alert("An error occurred. Please try again.");
   } finally {
-    loading.value = false;
+    isLoading.value = false;
   }
 };
 </script>
+
+<style scoped>
+.signup-page {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.bg-image {
+  position: absolute;
+  inset: 0;
+  filter: brightness(100%) saturate(90%);
+}
+
+.topbar {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  z-index: 2;
+}
+
+.sign-in-btn {
+  background: var(--color-primary);
+  color: var(--color-text-light);
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  min-height: 100vh;
+  padding: 24px clamp(16px, 4vw, 48px);
+}
+
+.brand {
+  color: var(--color-text-light);
+  font-weight: 800;
+  font-size: clamp(40px, 8vw, 72px);
+  letter-spacing: 1px;
+}
+
+.byline {
+  margin-top: 8px;
+  color: var(--color-text-muted);
+}
+
+.right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--color-card-fg);
+}
+
+.tagline {
+  color: var(--color-text-light);
+  margin: 0 0 8px;
+  font-weight: 700;
+}
+
+.sub {
+  margin: 0 0 16px;
+  color: var(--color-text-muted);
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  width: min(400px, 100%);
+}
+
+.form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: stretch;
+}
+
+.form-field :deep(.v-field) {
+  background: var(--color-field-bg);
+  color: var(--color-card-fg);
+}
+
+.primary-btn {
+  background: var(--color-primary);
+  color: var(--color-text-light);
+  padding: 0 28px;
+  width: 100%;
+  height: 48px;
+}
+
+.helper {
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.link {
+  color: #60a5fa;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 1024px) {
+  .content {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .right {
+    justify-self: center;
+    text-align: center;
+  }
+}
+</style>
