@@ -1,41 +1,41 @@
 import process from 'node:process';globalThis._importMeta_={url:import.meta.url,env:process.env};import { tmpdir } from 'node:os';
-import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, sendRedirect, proxyRequest, getRequestHeader, setResponseStatus, setResponseHeader, send, getRequestHeaders, getRequestURL, getResponseHeader, setResponseHeaders, appendResponseHeader, removeResponseHeader, createError, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getResponseStatus, getRouterParam, readBody, getQuery as getQuery$1, getResponseStatusText } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/h3/dist/index.mjs';
+import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, sendRedirect, proxyRequest, getRequestHeader, setResponseStatus, setResponseHeader, send, getRequestHeaders, getRequestURL, getResponseHeader, setResponseHeaders, appendResponseHeader, removeResponseHeader, createError, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getResponseStatus, getRouterParam, readBody, getQuery as getQuery$1, getResponseStatusText } from 'file:///Users/yashodharsrathod/Downloads/CodeWave-main/frontend/node_modules/h3/dist/index.mjs';
 import { Server } from 'node:http';
 import { resolve, dirname, join } from 'node:path';
 import nodeCrypto from 'node:crypto';
 import { parentPort, threadId } from 'node:worker_threads';
-import { getRequestDependencies, getPreloadLinks, getPrefetchLinks, createRenderer } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/vue-bundle-renderer/dist/runtime.mjs';
-import { stringify, uneval } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/devalue/index.js';
-import destr from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/destr/dist/index.mjs';
-import { parseURL, withoutBase, joinURL, getQuery, withQuery, withTrailingSlash, decodePath, withLeadingSlash, withoutTrailingSlash, joinRelativeURL } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/ufo/dist/index.mjs';
-import { renderToString } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/vue/server-renderer/index.mjs';
-import { propsToString, renderSSRHead } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/@unhead/ssr/dist/index.mjs';
-import { createHooks } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/hookable/dist/index.mjs';
-import { createFetch, Headers as Headers$1 } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/ofetch/dist/node.mjs';
-import { fetchNodeRequestHandler, callNodeRequestHandler } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/node-mock-http/dist/index.mjs';
-import { createStorage, prefixStorage } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/unstorage/dist/index.mjs';
-import unstorage_47drivers_47fs from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/unstorage/drivers/fs.mjs';
-import { digest } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/ohash/dist/index.mjs';
-import { klona } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/klona/dist/index.mjs';
-import defu, { defuFn } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/defu/dist/defu.mjs';
-import { snakeCase } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/scule/dist/index.mjs';
-import { getContext } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/unctx/dist/index.mjs';
-import { toRouteMatcher, createRouter } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/radix3/dist/index.mjs';
+import { getRequestDependencies, getPreloadLinks, getPrefetchLinks, createRenderer } from 'file:///Users/yashodharsrathod/Downloads/CodeWave-main/frontend/node_modules/vue-bundle-renderer/dist/runtime.mjs';
+import { stringify, uneval } from 'file:///Users/yashodharsrathod/Downloads/CodeWave-main/frontend/node_modules/devalue/index.js';
+import destr from 'file:///Users/yashodharsrathod/Downloads/CodeWave-main/frontend/node_modules/destr/dist/index.mjs';
+import { parseURL, withoutBase, joinURL, getQuery, withQuery, withTrailingSlash, decodePath, withLeadingSlash, withoutTrailingSlash, joinRelativeURL } from 'file:///Users/yashodharsrathod/Downloads/CodeWave-main/frontend/node_modules/ufo/dist/index.mjs';
+import { renderToString } from 'file:///Users/yashodharsrathod/Downloads/CodeWave-main/frontend/node_modules/vue/server-renderer/index.mjs';
+import { propsToString, renderSSRHead } from 'file:///Users/yashodharsrathod/Downloads/CodeWave-main/frontend/node_modules/@unhead/ssr/dist/index.mjs';
+import { createHooks } from 'file:///Users/yashodharsrathod/Downloads/CodeWave-main/frontend/node_modules/hookable/dist/index.mjs';
+import { createFetch, Headers as Headers$1 } from 'file:///Users/yashodharsrathod/Downloads/CodeWave-main/frontend/node_modules/ofetch/dist/node.mjs';
+import { fetchNodeRequestHandler, callNodeRequestHandler } from 'file:///Users/yashodharsrathod/Downloads/CodeWave-main/frontend/node_modules/node-mock-http/dist/index.mjs';
+import { createStorage, prefixStorage } from 'file:///Users/yashodharsrathod/Downloads/CodeWave-main/frontend/node_modules/unstorage/dist/index.mjs';
+import unstorage_47drivers_47fs from 'file:///Users/yashodharsrathod/Downloads/CodeWave-main/frontend/node_modules/unstorage/drivers/fs.mjs';
+import { digest } from 'file:///Users/yashodharsrathod/Downloads/CodeWave-main/frontend/node_modules/ohash/dist/index.mjs';
+import { klona } from 'file:///Users/yashodharsrathod/Downloads/CodeWave-main/frontend/node_modules/klona/dist/index.mjs';
+import defu, { defuFn } from 'file:///Users/yashodharsrathod/Downloads/CodeWave-main/frontend/node_modules/defu/dist/defu.mjs';
+import { snakeCase } from 'file:///Users/yashodharsrathod/Downloads/CodeWave-main/frontend/node_modules/scule/dist/index.mjs';
+import { getContext } from 'file:///Users/yashodharsrathod/Downloads/CodeWave-main/frontend/node_modules/unctx/dist/index.mjs';
+import { toRouteMatcher, createRouter } from 'file:///Users/yashodharsrathod/Downloads/CodeWave-main/frontend/node_modules/radix3/dist/index.mjs';
 import { readFile } from 'node:fs/promises';
-import consola, { consola as consola$1 } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/consola/dist/index.mjs';
-import { ErrorParser } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/youch-core/build/index.js';
-import { Youch } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/youch/build/index.js';
-import { SourceMapConsumer } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/source-map/source-map.js';
+import consola, { consola as consola$1 } from 'file:///Users/yashodharsrathod/Downloads/CodeWave-main/frontend/node_modules/consola/dist/index.mjs';
+import { ErrorParser } from 'file:///Users/yashodharsrathod/Downloads/CodeWave-main/frontend/node_modules/youch-core/build/index.js';
+import { Youch } from 'file:///Users/yashodharsrathod/Downloads/CodeWave-main/frontend/node_modules/youch/build/index.js';
+import { SourceMapConsumer } from 'file:///Users/yashodharsrathod/Downloads/CodeWave-main/frontend/node_modules/source-map/source-map.js';
 import { AsyncLocalStorage } from 'node:async_hooks';
-import { captureRawStackTrace, parseRawStackTrace } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/errx/dist/index.js';
-import { isVNode, unref, version } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/vue/index.mjs';
+import { captureRawStackTrace, parseRawStackTrace } from 'file:///Users/yashodharsrathod/Downloads/CodeWave-main/frontend/node_modules/errx/dist/index.js';
+import { isVNode, unref, version } from 'file:///Users/yashodharsrathod/Downloads/CodeWave-main/frontend/node_modules/vue/index.mjs';
 import { promises } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { dirname as dirname$1, resolve as resolve$1 } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/pathe/dist/index.mjs';
-import { createServerHead as createServerHead$1, CapoPlugin } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/unhead/dist/index.mjs';
-import { defineHeadPlugin } from 'file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/@unhead/shared/dist/index.mjs';
+import { dirname as dirname$1, resolve as resolve$1 } from 'file:///Users/yashodharsrathod/Downloads/CodeWave-main/frontend/node_modules/pathe/dist/index.mjs';
+import { createServerHead as createServerHead$1, CapoPlugin } from 'file:///Users/yashodharsrathod/Downloads/CodeWave-main/frontend/node_modules/unhead/dist/index.mjs';
+import { defineHeadPlugin } from 'file:///Users/yashodharsrathod/Downloads/CodeWave-main/frontend/node_modules/@unhead/shared/dist/index.mjs';
 
-const serverAssets = [{"baseName":"server","dir":"/Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/server/assets"}];
+const serverAssets = [{"baseName":"server","dir":"/Users/yashodharsrathod/Downloads/CodeWave-main/frontend/server/assets"}];
 
 const assets$1 = createStorage();
 
@@ -47,11 +47,11 @@ const storage = createStorage({});
 
 storage.mount('/assets', assets$1);
 
-storage.mount('root', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"/Users/vinyasr/Desktop/Complex_System/CodeWave/frontend"}));
-storage.mount('src', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"/Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/server"}));
-storage.mount('build', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"/Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/.nuxt"}));
-storage.mount('cache', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"/Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/.nuxt/cache"}));
-storage.mount('data', unstorage_47drivers_47fs({"driver":"fs","base":"/Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/.data/kv"}));
+storage.mount('root', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"/Users/yashodharsrathod/Downloads/CodeWave-main/frontend"}));
+storage.mount('src', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"/Users/yashodharsrathod/Downloads/CodeWave-main/frontend/server"}));
+storage.mount('build', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"/Users/yashodharsrathod/Downloads/CodeWave-main/frontend/.nuxt"}));
+storage.mount('cache', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"/Users/yashodharsrathod/Downloads/CodeWave-main/frontend/.nuxt/cache"}));
+storage.mount('data', unstorage_47drivers_47fs({"driver":"fs","base":"/Users/yashodharsrathod/Downloads/CodeWave-main/frontend/.data/kv"}));
 
 function useStorage(base = "") {
   return base ? prefixStorage(storage, base) : storage;
@@ -646,7 +646,9 @@ const _inlineRuntimeConfig = {
       }
     }
   },
-  "public": {}
+  "public": {
+    "apiBase": "http://localhost:3001/api/v1"
+  }
 };
 const envOptions = {
   prefix: "NITRO_",
@@ -1040,13 +1042,13 @@ if (!window.__NUXT_DEVTOOLS_TIME_METRIC__) {
 window.__NUXT_DEVTOOLS_TIME_METRIC__.appInit = Date.now()
 `;
 
-const _ElgjGQue3ar00i68zxFS_bSPOPRfZ5o31QZrAYsa58 = (function(nitro) {
+const _AHYcpReQIA_5j6gHbW7bt2vte4XDSKTfEC0Gw7mc = (function(nitro) {
   nitro.hooks.hook("render:html", (htmlContext) => {
     htmlContext.head.push(`<script>${script}<\/script>`);
   });
 });
 
-const rootDir = "/Users/vinyasr/Desktop/Complex_System/CodeWave/frontend";
+const rootDir = "/Users/yashodharsrathod/Downloads/CodeWave-main/frontend";
 
 const appHead = {"meta":[{"name":"viewport","content":"width=device-width, initial-scale=1"},{"charset":"utf-8"},{"hid":"description","name":"description","content":"Template to get you up and running with Nuxt 3 & Vuetify 3"},{"property":"og:site_name","content":"Vuetify 3 + Nuxt 3 Starter"},{"hid":"og:type","property":"og:type","content":"website"},{"hid":"og:url","property":"og:url","content":"https://vuetify3nuxt3starter.behonbaker.com/"},{"hid":"og:image:secure_url","property":"og:image:secure_url","content":"https://vuetify3nuxt3starter.behonbaker.com/starter.png"},{"hid":"og:title","property":"og:title","content":"Vuetify 3 + Nuxt 3 Starter"},{"hid":"og:description","property":"og:description","content":"Template to get you up and running with Nuxt 3 & Vuetify 3"},{"hid":"og:image","property":"og:image","content":"https://vuetify3nuxt3starter.behonbaker.com/starter.png"},{"name":"twitter:card","content":"summary_large_image"},{"hid":"twitter:url","name":"twitter:url","content":"https://vuetify3nuxt3starter.behonbaker.com/"},{"hid":"twitter:title","name":"twitter:title","content":"Vuetify 3 + Nuxt 3 Starter"},{"hid":"twitter:description","name":"twitter:description","content":"Template to get you up and running with Nuxt 3 & Vuetify 3"},{"hid":"twitter:image","name":"twitter:image","content":"https://vuetify3nuxt3starter.behonbaker.com/starter.png"}],"link":[{"rel":"stylesheet","href":"https://rsms.me/inter/inter.css"},{"rel":"preconnect","href":"https://rsms.me/"},{"rel":"icon","type":"image/x-icon","href":"/favicon.ico"},{"rel":"canonical","href":"https://vuetify3nuxt3starter.behonbaker.com/"}],"style":[],"script":[],"noscript":[],"title":"Vuetify 3 + Nuxt 3 Starter","titleTemplate":"%s | Vuetify 3 + Nuxt 3 Starter"};
 
@@ -1065,7 +1067,7 @@ const devReducers = {
   URL: (data) => data instanceof URL ? data.toString() : void 0
 };
 const asyncContext = getContext("nuxt-dev", { asyncContext: true, AsyncLocalStorage });
-const _TAYKfgQ1ad3FH58DKpcIXljkJTVW0ja2xaU7uBYRwU = (nitroApp) => {
+const _rxRPpj4PmtDDSupY4zA6cLtEQSuwMEbc6pvAWcU3OB8 = (nitroApp) => {
   const handler = nitroApp.h3App.handler;
   nitroApp.h3App.handler = (event) => {
     return asyncContext.callAsync({ logs: [], event }, () => handler(event));
@@ -1135,8 +1137,8 @@ function onConsoleLog(callback) {
 }
 
 const plugins = [
-  _ElgjGQue3ar00i68zxFS_bSPOPRfZ5o31QZrAYsa58,
-_TAYKfgQ1ad3FH58DKpcIXljkJTVW0ja2xaU7uBYRwU
+  _AHYcpReQIA_5j6gHbW7bt2vte4XDSKTfEC0Gw7mc,
+_rxRPpj4PmtDDSupY4zA6cLtEQSuwMEbc6pvAWcU3OB8
 ];
 
 const assets = {};
@@ -1164,7 +1166,7 @@ function getAsset (id) {
 
 const METHODS = /* @__PURE__ */ new Set(["HEAD", "GET"]);
 const EncodingMap = { gzip: ".gz", br: ".br" };
-const _8Z8LjF = eventHandler((event) => {
+const _wSaD4M = eventHandler((event) => {
   if (event.method && !METHODS.has(event.method)) {
     return;
   }
@@ -1228,12 +1230,12 @@ const _8Z8LjF = eventHandler((event) => {
   return readAsset(id);
 });
 
-const _lazy_ABLOxC = () => Promise.resolve().then(function () { return renderer$1; });
+const _lazy_goa7Ee = () => Promise.resolve().then(function () { return renderer$1; });
 
 const handlers = [
-  { route: '', handler: _8Z8LjF, lazy: false, middleware: true, method: undefined },
-  { route: '/__nuxt_error', handler: _lazy_ABLOxC, lazy: true, middleware: false, method: undefined },
-  { route: '/**', handler: _lazy_ABLOxC, lazy: true, middleware: false, method: undefined }
+  { route: '', handler: _wSaD4M, lazy: false, middleware: true, method: undefined },
+  { route: '/__nuxt_error', handler: _lazy_goa7Ee, lazy: true, middleware: false, method: undefined },
+  { route: '/**', handler: _lazy_goa7Ee, lazy: true, middleware: false, method: undefined }
 ];
 
 function createNitroApp() {
@@ -1627,8 +1629,8 @@ function publicAssetsURL(...path) {
 
 globalThis.__buildAssetsURL = buildAssetsURL;
 globalThis.__publicAssetsURL = publicAssetsURL;
-const getClientManifest = () => import('file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/.nuxt/dist/server/client.manifest.mjs').then((r) => r.default || r).then((r) => typeof r === "function" ? r() : r);
-const getServerEntry = () => import('file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/.nuxt/dist/server/server.mjs').then((r) => r.default || r);
+const getClientManifest = () => import('file:///Users/yashodharsrathod/Downloads/CodeWave-main/frontend/.nuxt/dist/server/client.manifest.mjs').then((r) => r.default || r).then((r) => typeof r === "function" ? r() : r);
+const getServerEntry = () => import('file:///Users/yashodharsrathod/Downloads/CodeWave-main/frontend/.nuxt/dist/server/server.mjs').then((r) => r.default || r);
 const getSSRStyles = lazyCachedFunction(() => Promise.resolve().then(function () { return styles$1; }).then((r) => r.default || r));
 const getSSRRenderer = lazyCachedFunction(async () => {
   const manifest = await getClientManifest();
