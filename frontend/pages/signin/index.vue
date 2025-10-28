@@ -43,11 +43,27 @@
             />
           </div>
           <div class="mt-5">
-            <VBtn type="submit" block min-height="44" class="primary-btn"
-              >Sign In</VBtn
+            <VBtn 
+              type="submit" 
+              block 
+              min-height="44" 
+              class="primary-btn"
+              :loading="loading"
+              :disabled="loading"
             >
+              {{ loading ? 'Signing In...' : 'Sign In' }}
+            </VBtn>
           </div>
         </VForm>
+
+        <!-- Error Message -->
+        <VAlert
+          v-if="errorMessage"
+          type="error"
+          class="mt-4"
+          :text="errorMessage"
+          variant="outlined"
+        />
 
         <p class="helper">
           Don't have an account?
@@ -59,12 +75,49 @@
 </template>
 
 <script setup>
+// Redirect to dashboard if already authenticated
+definePageMeta({
+  middleware: 'guest'
+})
+
 const email = ref("");
 const password = ref("");
+const loading = ref(false);
+const errorMessage = ref("");
 
 const { ruleEmail, rulePassLen, ruleRequired } = useFormRules();
+const { signin } = useApi();
 
-const submit = async () => {};
+const submit = async () => {
+  if (!email.value || !password.value) {
+    errorMessage.value = "Please fill in all fields";
+    return;
+  }
+
+  loading.value = true;
+  errorMessage.value = "";
+
+  try {
+    const response = await signin(email.value, password.value);
+    
+    if (response.status === 200 && response.data) {
+      // Store authentication data
+      localStorage.setItem('accessToken', response.data.accessToken);
+      localStorage.setItem('userId', response.data.userId);
+      localStorage.setItem('userName', response.data.name);
+      localStorage.setItem('userEmail', response.data.email);
+      localStorage.setItem('userRole', response.data.role);
+      
+      // Navigate to dashboard or home page
+      await navigateTo('/dashboard');
+    }
+  } catch (error) {
+    console.error('Signin error:', error);
+    errorMessage.value = error.message || 'Sign in failed. Please try again.';
+  } finally {
+    loading.value = false;
+  }
+};
 </script>
 
 <style scoped>

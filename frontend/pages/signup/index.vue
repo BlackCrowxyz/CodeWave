@@ -52,10 +52,21 @@
                   block
                   min-height="45"
                   class="gradient primary"
-                  >Create Account</VBtn
+                  :loading="loading"
+                  :disabled="loading"
+                  >{{ loading ? 'Creating Account...' : 'Create Account' }}</VBtn
                 >
               </div>
             </VForm>
+            
+            <!-- Error Message -->
+            <VAlert
+              v-if="errorMessage"
+              type="error"
+              class="mt-4"
+              :text="errorMessage"
+              variant="outlined"
+            />
             <p class="text-body-2 mt-10">
               <span
                 >Already have an account?
@@ -89,11 +100,56 @@
 </template>
 
 <script setup>
+// Redirect to dashboard if already authenticated
+definePageMeta({
+  middleware: 'guest'
+})
+
 const name = ref("");
 const email = ref("");
 const password = ref("");
+const loading = ref(false);
+const errorMessage = ref("");
+
+// Pre-fill email from query parameter if provided
+const route = useRoute()
+onMounted(() => {
+  if (route.query.email && typeof route.query.email === 'string') {
+    email.value = route.query.email
+  }
+})
 
 const { ruleEmail, rulePassLen, ruleRequired } = useFormRules();
+const { signup } = useApi();
 
-const submit = async () => {};
+const submit = async () => {
+  if (!name.value || !email.value || !password.value) {
+    errorMessage.value = "Please fill in all fields";
+    return;
+  }
+
+  loading.value = true;
+  errorMessage.value = "";
+
+  try {
+    const response = await signup(name.value, email.value, password.value);
+    
+    if (response.status === 201 && response.data) {
+      // Store authentication data
+      localStorage.setItem('accessToken', response.data.accessToken);
+      localStorage.setItem('userId', response.data.userId);
+      localStorage.setItem('userName', response.data.name);
+      localStorage.setItem('userEmail', response.data.email);
+      localStorage.setItem('userRole', response.data.role);
+      
+      // Navigate to dashboard or home page
+      await navigateTo('/dashboard');
+    }
+  } catch (error) {
+    console.error('Signup error:', error);
+    errorMessage.value = error.message || 'Sign up failed. Please try again.';
+  } finally {
+    loading.value = false;
+  }
+};
 </script>

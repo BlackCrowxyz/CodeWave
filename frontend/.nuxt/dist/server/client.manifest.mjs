@@ -1,1 +1,1 @@
-export { default } from "file:///Users/vinyasr/Desktop/Complex_System/CodeWave/frontend/node_modules/@nuxt/vite-builder/dist/runtime/client.manifest.mjs"
+export { default } from "file:///Users/yashodharsrathod/Downloads/CodeWave-main/frontend/node_modules/@nuxt/vite-builder/dist/runtime/client.manifest.mjs"

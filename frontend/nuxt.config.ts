@@ -16,6 +16,15 @@ export default defineNuxtConfig({
 
   devtools: { enabled: true },
 
+  // Runtime config
+  runtimeConfig: {
+    // Private keys (only available on server-side)
+    // Public keys (exposed to client-side)
+    public: {
+      apiBase: process.env.API_BASE_URL || 'http://localhost:3001/api/v1'
+    }
+  },
+
   // enable takeover mode
   typescript: { shim: false },
 

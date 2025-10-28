@@ -26,6 +26,7 @@
 
         <div class="cta">
           <VTextField
+            v-model="email"
             class="email-input"
             variant="solo"
             hide-details="auto"
@@ -34,7 +35,13 @@
             size="large"
           />
 
-          <VBtn class="primary-btn" size="large">Get Started</VBtn>
+          <VBtn 
+            class="primary-btn" 
+            size="large"
+            @click="handleGetStarted"
+          >
+            Get Started
+          </VBtn>
         </div>
       </div>
     </div>
@@ -43,6 +50,16 @@
 
 <script setup>
 // Landing route page
+const email = ref('')
+
+const handleGetStarted = () => {
+  // Navigate to signup page, optionally with pre-filled email
+  if (email.value) {
+    navigateTo(`/signup?email=${encodeURIComponent(email.value)}`)
+  } else {
+    navigateTo('/signup')
+  }
+}
 </script>
 
 <style scoped>
