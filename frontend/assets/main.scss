@@ -14,6 +14,9 @@ $family: "Inter var", "Inter", apple-system, BlinkMacSystemFont, "Segoe UI",
   --color-card-fg: #e5e7eb;
   --color-overlay: rgba(0, 0, 0, 0.65);
   --color-field-bg: rgba(0, 0, 0, 0.6);
+  --color-main-bg: #f3f0eb;
+  --color-main-card-bg: #ffffff;
+  --color-main-text: #000000;
 }
 @supports (font-variation-settings: normal) {
   :root {

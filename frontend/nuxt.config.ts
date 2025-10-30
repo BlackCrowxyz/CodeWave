@@ -3,7 +3,8 @@ import vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
 // PWA Config
 const title = "Vuetify 3 + Nuxt 3 Starter";
 const shortTitle = "Vuetify 3 + Nuxt 3 Starter";
-const description = "Template to get you up and running with Nuxt 3 & Vuetify 3";
+const description =
+  "Template to get you up and running with Nuxt 3 & Vuetify 3";
 const image = "https://vuetify3nuxt3starter.behonbaker.com/starter.png";
 const url = "https://vuetify3nuxt3starter.behonbaker.com/";
 const author = "Behon Baker";
@@ -12,7 +13,7 @@ const themeColor = "#4f46e5";
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
   // import styles
-  css: ["@/assets/main.scss"],
+  css: ["@/assets/main.scss", "leaflet/dist/leaflet.css"],
 
   devtools: { enabled: true },
 
@@ -21,8 +22,8 @@ export default defineNuxtConfig({
     // Private keys (only available on server-side)
     // Public keys (exposed to client-side)
     public: {
-      apiBase: process.env.API_BASE_URL || 'http://localhost:3001/api/v1'
-    }
+      apiBase: process.env.API_BASE_URL || "http://localhost:3001/api/v1",
+    },
   },
 
   // enable takeover mode

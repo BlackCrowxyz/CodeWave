@@ -1,10 +1,6 @@
 <template>
   <div class="landing-page">
-    <VImg
-      src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=2070&auto=format&fit=crop"
-      cover
-      class="bg-image"
-    />
+    <VImg src="/assets/landing-bg.jpeg" cover class="bg-image" />
 
     <div class="topbar">
       <NuxtLink to="/signin">
@@ -35,11 +31,7 @@
             size="large"
           />
 
-          <VBtn 
-            class="primary-btn" 
-            size="large"
-            @click="handleGetStarted"
-          >
+          <VBtn class="primary-btn" size="large" @click="handleGetStarted">
             Get Started
           </VBtn>
         </div>
@@ -50,16 +42,16 @@
 
 <script setup>
 // Landing route page
-const email = ref('')
+const email = ref("");
 
 const handleGetStarted = () => {
   // Navigate to signup page, optionally with pre-filled email
   if (email.value) {
-    navigateTo(`/signup?email=${encodeURIComponent(email.value)}`)
+    navigateTo(`/signup?email=${encodeURIComponent(email.value)}`);
   } else {
-    navigateTo('/signup')
+    navigateTo("/signup");
   }
-}
+};
 </script>
 
 <style scoped>
@@ -72,7 +64,7 @@ const handleGetStarted = () => {
 .bg-image {
   position: absolute;
   inset: 0;
-  filter: brightness(0.7);
+  filter: brightness(100%) saturate(90%);
 }
 .topbar {
   position: absolute;

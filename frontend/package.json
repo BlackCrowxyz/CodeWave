@@ -22,8 +22,10 @@
     "vuetify": "^3.7.6"
   },
   "dependencies": {
+    "leaflet": "^1.9.4",
     "vite-plugin-vuetify": "^2.0.4",
     "vue": "latest",
+    "vue-leaflet": "^0.1.0",
     "vue-router": "latest"
   }
 }

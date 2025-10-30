@@ -1,10 +1,6 @@
 <template>
   <div class="sign-in-page">
-    <VImg
-      src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=2070&auto=format&fit=crop"
-      cover
-      class="bg-image"
-    />
+    <VImg src="/assets/landing-bg.jpeg" cover class="bg-image" />
 
     <div class="headline">TripWave</div>
 
@@ -43,15 +39,15 @@
             />
           </div>
           <div class="mt-5">
-            <VBtn 
-              type="submit" 
-              block 
-              min-height="44" 
+            <VBtn
+              type="submit"
+              block
+              min-height="44"
               class="primary-btn"
               :loading="loading"
               :disabled="loading"
             >
-              {{ loading ? 'Signing In...' : 'Sign In' }}
+              {{ loading ? "Signing In..." : "Sign In" }}
             </VBtn>
           </div>
         </VForm>
@@ -77,8 +73,8 @@
 <script setup>
 // Redirect to dashboard if already authenticated
 definePageMeta({
-  middleware: 'guest'
-})
+  middleware: "guest",
+});
 
 const email = ref("");
 const password = ref("");
@@ -99,21 +95,21 @@ const submit = async () => {
 
   try {
     const response = await signin(email.value, password.value);
-    
+
     if (response.status === 200 && response.data) {
       // Store authentication data
-      localStorage.setItem('accessToken', response.data.accessToken);
-      localStorage.setItem('userId', response.data.userId);
-      localStorage.setItem('userName', response.data.name);
-      localStorage.setItem('userEmail', response.data.email);
-      localStorage.setItem('userRole', response.data.role);
-      
+      localStorage.setItem("accessToken", response.data.accessToken);
+      localStorage.setItem("userId", response.data.userId);
+      localStorage.setItem("userName", response.data.name);
+      localStorage.setItem("userEmail", response.data.email);
+      localStorage.setItem("userRole", response.data.role);
+
       // Navigate to dashboard or home page
-      await navigateTo('/dashboard');
+      await navigateTo("/dashboard");
     }
   } catch (error) {
-    console.error('Signin error:', error);
-    errorMessage.value = error.message || 'Sign in failed. Please try again.';
+    console.error("Signin error:", error);
+    errorMessage.value = error.message || "Sign in failed. Please try again.";
   } finally {
     loading.value = false;
   }
@@ -131,7 +127,7 @@ const submit = async () => {
 .bg-image {
   position: absolute;
   inset: 0;
-  filter: brightness(0.65);
+  filter: brightness(100%) saturate(90%);
 }
 
 .headline {
