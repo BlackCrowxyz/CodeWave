@@ -106,9 +106,7 @@
 
 <script setup>
 const runtimeConfig = useRuntimeConfig();
-const API_BASE = `${
-  runtimeConfig.public?.apiBase || "http://localhost:3001"
-}/api/v1`;
+const API_BASE = runtimeConfig.public?.apiBase || "http://localhost:3001/api/v1";
 
 const route = useRoute();
 const router = useRouter();
@@ -136,20 +134,10 @@ function validateField(rules, value) {
   return true;
 }
 
-// Check email existence on mount if email is pre-filled
+// Optionally pre-check email existence
 onMounted(async () => {
-  if (email.value) {
-    try {
-      const res = await fetch(
-        `${API_BASE}/users/email/${encodeURIComponent(email.value)}`
-      );
-      const json = await res.json();
-      emailExists.value = Boolean(json?.data?.exists);
-      emailChecked.value = true;
-    } catch (e) {
-      console.error("Error checking email:", e);
-    }
-  }
+  emailChecked.value = Boolean(email.value);
+  emailExists.value = false;
 });
 
 const submit = async () => {
@@ -160,21 +148,9 @@ const submit = async () => {
   if (!validateField([ruleRequired, rulePasswordMatch], confirmPassword.value))
     return;
 
-  // Check if email exists
+  // Skip remote email existence check (not available on backend). Rely on 409 from /signup
   emailChecked.value = true;
-  try {
-    const res = await fetch(
-      `${API_BASE}/users/email/${encodeURIComponent(email.value)}`
-    );
-    const json = await res.json();
-    emailExists.value = Boolean(json?.data?.exists);
-
-    if (emailExists.value) {
-      return; // Don't proceed if email exists
-    }
-  } catch (e) {
-    console.error("Error checking email:", e);
-  }
+  emailExists.value = false;
 
   isLoading.value = true;
 
@@ -194,10 +170,13 @@ const submit = async () => {
     const result = await response.json();
 
     if (response.ok) {
-      // Store token if available
+      // Store token and user data (consistent with signin flow)
       if (result.data?.accessToken) {
-        localStorage.setItem("auth_token", result.data.accessToken);
-        localStorage.setItem("user", JSON.stringify(result.data));
+        localStorage.setItem('accessToken', result.data.accessToken);
+        localStorage.setItem('userId', String(result.data.userId || result.data.id || ''));
+        localStorage.setItem('userName', result.data.name || '');
+        localStorage.setItem('userEmail', result.data.email || '');
+        localStorage.setItem('userRole', result.data.role || 'user');
       }
 
       // Redirect to dashboard
