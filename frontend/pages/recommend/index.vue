@@ -59,6 +59,7 @@
               v-for="place in recommendedPlaces"
               :key="place.name"
               class="place-item"
+              @click="drawer = !drawer; selectedPlace = place"
           >
             <div class="place-info">
               <span class="place-name">{{ place.name }}
@@ -76,12 +77,32 @@
           <div id="map-recommendations"></div>
         </div>
       </div>
+
+      <v-navigation-drawer
+        v-model="drawer"
+        temporary
+        location="right"
+        width="500"
+      >
+        <v-list-item :title="selectedPlace?.name"></v-list-item>
+
+        <v-divider></v-divider>
+
+        <v-list density="compact" nav>
+          <v-list-item prepend-icon="mdi-forum" :title="selectedPlace?.type" value="Type"></v-list-item>
+          <v-list-item prepend-icon="mdi-forum" :title="selectedPlace?.distance" value="distance"></v-list-item>
+        </v-list>
+
+      </v-navigation-drawer>
     </section>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+
+const drawer = ref(false);
+const selectedPlace = ref(null);
 
 // Assuming VBtn is a registered component
 // import { VBtn } from 'vuetify/components';
