@@ -1,4 +1,5 @@
 import vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
+import {process} from "std-env";
 
 // PWA Config
 const title = "Vuetify 3 + Nuxt 3 Starter";
