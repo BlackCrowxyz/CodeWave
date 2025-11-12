@@ -3,7 +3,8 @@
 </template>
 
 <script setup>
-definePageMeta({ redirect: "/recommend" });
+// definePageMeta({ redirect: "/recommend" });
+definePageMeta({ redirect: "/landing" });
 </script>
 
 <style scoped>

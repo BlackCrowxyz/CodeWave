@@ -72,6 +72,25 @@ export const signout = async (req, res, next) => {
   }
 };
 
+export const checkEmail = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    
+    if (!email) {
+      return handleResponse(res, 400, "Email is required");
+    }
+
+    const existingUser = await getUserByEmailService(email.trim().toLowerCase());
+    
+    return handleResponse(res, 200, "Email check completed", {
+      exists: !!existingUser
+    });
+  } catch (error) {
+    console.error("Error checking email:", error);
+    next(error);
+  }
+};
+
 export const signup = async (req, res, next) => {
   try {
     const { name, email, password, role = 'user' } = req.body;

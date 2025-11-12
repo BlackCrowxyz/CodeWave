@@ -76,7 +76,8 @@ definePageMeta({
   middleware: "guest",
 });
 
-const email = ref("");
+const route = useRoute();
+const email = ref(typeof route.query.email === 'string' ? route.query.email : "");
 const password = ref("");
 const loading = ref(false);
 const errorMessage = ref("");

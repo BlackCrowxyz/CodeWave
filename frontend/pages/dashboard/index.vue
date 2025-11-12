@@ -93,19 +93,14 @@
 
 <script setup>
 const router = useRouter();
+const { signout } = useAuth();
 
 const startPlanning = () => {
   router.push("/plan");
 };
 
-const handleSignOut = () => {
-  if (process.client) {
-    localStorage.removeItem("auth_token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("userEmail");
-    localStorage.removeItem("userName");
-  }
-  router.push("/signin");
+const handleSignOut = async () => {
+  await signout();
 };
 </script>
 

@@ -107,9 +107,12 @@ const selectedPlace = ref(null);
 // Assuming VBtn is a registered component
 // import { VBtn } from 'vuetify/components';
 
+const router = useRouter();
+const { signout } = useAuth();
+
 // Sign out handler
-const handleSignOut = () => {
-  console.log("User clicked sign out"); // Also translated this console log for consistency
+const handleSignOut = async () => {
+  await signout();
 };
 
 // Mock data for recommended places (based on prototype)
