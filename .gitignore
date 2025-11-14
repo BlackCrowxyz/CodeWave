@@ -1,4 +1,3 @@
-*/node_modules/
 */.env
 */package-lock.json
 */.DS_Store
@@ -23,3 +22,11 @@ frontend/.nuxt/*
 .nuxt
 .nuxt/
 .nuxt/*
+*/.nuxt
+*/package-lock.json
+*/.nuxt
+*/node_modules
+*/package-lock.json
+*/.DS_Store
+*/.nuxt
+*/package-lock.json
