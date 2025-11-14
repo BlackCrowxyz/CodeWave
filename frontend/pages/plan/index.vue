@@ -69,14 +69,23 @@
         <!-- Right Column -->
         <div class="right-col">
           <div class="form-group">
-            <label class="form-label">Current Location</label>
-            <VTextField
-              v-model="location"
-              variant="outlined"
-              density="comfortable"
-              hide-details="auto"
-              class="form-input"
-            />
+            <label class="form-label">Location</label>
+            <div class="location-input-row" style="display: flex; gap: 8px; align-items: center;">
+              <VTextField
+                v-model="location"
+                variant="outlined"
+                density="comfortable"
+                hide-details="auto"
+                class="form-input"
+                placeholder="Enter address"
+              />
+              <VBtn size="small" variant="outlined" @click="searchAddress" :title="'Search address'">
+                <VIcon icon="mdi-magnify" />
+              </VBtn>
+              <VBtn size="small" variant="outlined" @click="useCurrentLocation" :title="'Use current location'">
+                <VIcon icon="mdi-crosshairs-gps" />
+              </VBtn>
+            </div>
           </div>
 
           <!-- Map Container -->
@@ -102,9 +111,13 @@ const router = useRouter();
 const budget = ref("0");
 const duration = ref("");
 const location = ref("");
+const locLat = ref(null);
+const locLon = ref(null);
 const currentStep = ref(1);
 
 let map = null;
+let LRef = null;
+let currentMarker = null;
 
 const durationOptions = [
   "1 day",
@@ -118,6 +131,7 @@ const durationOptions = [
 
 // Calculate progress percentage based on current step
 const progressPercentage = computed(() => {
+  // Assuming 3 steps total: step 1 = 33%, step 2 = 66%, step 3 = 100%
   return (currentStep.value / 3) * 100;
 });
 
@@ -145,13 +159,26 @@ const handleContinue = () => {
   console.log("Budget:", budget.value);
   console.log("Duration:", duration.value);
   console.log("Location:", location.value);
-
-  // Advance to next step (or navigate to next page)
-  if (currentStep.value < 3) {
-    currentStep.value++;
-  } else {
-    console.log("Form submitted!");
+  // Persist plan data under a single key 'tripPlan'
+  if (process.client) {
+    let existing = null;
+    try { existing = JSON.parse(localStorage.getItem('tripPlan') || 'null'); } catch {}
+    const next = {
+      ...(existing || {}),
+      plan: {
+        budget: String(budget.value),
+        duration: String(duration.value),
+        address: String(location.value),
+        lat: typeof locLat.value === 'number' ? locLat.value : null,
+        lon: typeof locLon.value === 'number' ? locLon.value : null,
+      },
+      updatedAt: new Date().toISOString(),
+    };
+    localStorage.setItem('tripPlan', JSON.stringify(next));
   }
+
+  // Navigate to Interests page
+  router.push("/interests");
 };
 
 // Initialize OpenStreetMap
@@ -160,6 +187,7 @@ onMounted(async () => {
     // Dynamically import Leaflet on client to avoid SSR "window is not defined"
     const leaflet = await import("leaflet");
     const L = leaflet.default;
+    LRef = L;
 
     // Fix Leaflet default icon paths
     delete L.Icon.Default.prototype._getIconUrl;
@@ -186,25 +214,20 @@ onMounted(async () => {
           maxZoom: 19,
         }).addTo(map);
 
-        // Add a marker at Western Gateway Building, University College Cork
-        L.marker([51.8985, -8.4756])
+        currentMarker = L.marker([51.8985, -8.4756])
           .addTo(map)
           .bindPopup("Western Gateway Building<br>University College Cork")
           .openPopup();
 
-        // Update location input when user clicks on map
         map.on("click", (e) => {
           const { lat, lng } = e.latlng;
-          location.value = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
-
-          // Remove previous marker and add new one at clicked location
-          map.eachLayer((layer) => {
-            if (layer instanceof L.Marker) {
-              map.removeLayer(layer);
-            }
-          });
-
-          L.marker([lat, lng])
+          reverseGeocodeAndSet(lat, lng);
+          locLat.value = lat;
+          locLon.value = lng;
+          if (currentMarker) {
+            map.removeLayer(currentMarker);
+          }
+          currentMarker = LRef.marker([lat, lng])
             .addTo(map)
             .bindPopup(`${lat.toFixed(4)}, ${lng.toFixed(4)}`)
             .openPopup();
@@ -221,6 +244,95 @@ onUnmounted(() => {
     map = null;
   }
 });
+
+const fetchJson = async (url) => {
+  const res = await fetch(url, { headers: { Accept: "application/json" } });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return await res.json();
+};
+
+const searchAddress = async () => {
+  if (!process.client) return;
+  const query = (location.value || "").trim();
+  if (!query) return;
+  try {
+    const results = await fetchJson(
+      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=jsonv2&addressdetails=1&limit=1`
+    );
+    if (Array.isArray(results) && results.length > 0) {
+      const lat = parseFloat(results[0].lat);
+      const lon = parseFloat(results[0].lon);
+      const display = results[0].display_name || query;
+      if (map && LRef) {
+        map.setView([lat, lon], 13);
+        if (currentMarker) {
+          map.removeLayer(currentMarker);
+        }
+        currentMarker = LRef.marker([lat, lon])
+          .addTo(map)
+          .bindPopup(`${lat.toFixed(4)}, ${lon.toFixed(4)}`)
+          .openPopup();
+      }
+      location.value = display;
+      locLat.value = lat;
+      locLon.value = lon;
+    } else {
+      alert("No results found for the entered address");
+    }
+  } catch (e) {
+    alert("Failed to search address");
+    console.error(e);
+  }
+};
+
+const reverseGeocodeRaw = async (lat, lon) => {
+  return await fetchJson(
+    `https://nominatim.openstreetmap.org/reverse?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}&format=jsonv2&addressdetails=1`
+  );
+};
+
+const reverseGeocodeAndSet = async (lat, lon) => {
+  try {
+    const data = await reverseGeocodeRaw(lat, lon);
+    const display = data?.display_name || `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+    location.value = display;
+  } catch (e) {
+    console.error(e);
+    location.value = `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+  }
+};
+
+const useCurrentLocation = () => {
+  if (!process.client) return;
+  if (!navigator.geolocation) {
+    alert("Geolocation is not supported by your browser");
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const lat = pos.coords.latitude;
+      const lon = pos.coords.longitude;
+      if (map && LRef) {
+        map.setView([lat, lon], 13);
+        if (currentMarker) {
+          map.removeLayer(currentMarker);
+        }
+        currentMarker = LRef.marker([lat, lon])
+          .addTo(map)
+          .bindPopup(`${lat.toFixed(4)}, ${lon.toFixed(4)}`)
+          .openPopup();
+      }
+      reverseGeocodeAndSet(lat, lon);
+      locLat.value = lat;
+      locLon.value = lon;
+    },
+    (err) => {
+      alert("Unable to retrieve your location");
+      console.error(err);
+    },
+    { enableHighAccuracy: true, timeout: 10000 }
+  );
+};
 </script>
 
 <style scoped>
