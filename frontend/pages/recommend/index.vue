@@ -18,7 +18,7 @@
           <span class="emoji">💵</span>
           <div class="detail-content">
             <span class="detail-label">Budget</span>
-            <span class="detail-value">200</span>
+            <span class="detail-value">€{{ tripPlan.budget }}</span>
           </div>
         </div>
         <!-- Location -->
@@ -26,7 +26,7 @@
           <span class="emoji">📍</span>
           <div class="detail-content">
             <span class="detail-label">Location</span>
-            <span class="detail-value">Cork</span>
+            <span class="detail-value">{{ tripPlan.currentLocation ? `${tripPlan.currentLocation[0].toFixed(4)}, ${tripPlan.currentLocation[1].toFixed(4)}` : 'Not set' }}</span>
           </div>
         </div>
         <!-- Duration -->
@@ -34,7 +34,15 @@
           <span class="emoji">🕐</span>
           <div class="detail-content">
             <span class="detail-label">Duration</span>
-            <span class="detail-value">1 day</span>
+            <span class="detail-value">{{ tripPlan.duration }} {{ tripPlan.duration === 1 ? 'day' : 'days' }}</span>
+          </div>
+        </div>
+        <!-- Interests -->
+        <div v-if="tripPlan.interests && tripPlan.interests.length > 0" class="detail-item">
+          <span class="emoji">🎯</span>
+          <div class="detail-content">
+            <span class="detail-label">Interests</span>
+            <span class="detail-value">{{ tripPlan.interests.join(', ') }}</span>
           </div>
         </div>
       </div>
@@ -52,7 +60,22 @@
         </span>
       </div>
 
-      <div class="content-layout">
+      <!-- Loading State -->
+      <div v-if="isLoading" class="loading-container">
+        <p>Loading AI recommendations...</p>
+      </div>
+
+      <!-- Error State -->
+      <VAlert
+        v-if="errorMessage && !isLoading"
+        type="error"
+        variant="outlined"
+        class="mb-4"
+        :text="errorMessage"
+      />
+
+      <!-- Recommendations Content -->
+      <div v-if="!isLoading && !errorMessage" class="content-layout">
         <!-- Left: Places List -->
         <div class="places-list">
           <div
@@ -67,8 +90,12 @@
                 <span v-if="place.featured">⭐</span>
               </span>
               <span class="place-type">{{ place.type }}</span>
+              <span v-if="place.description" class="place-description">{{ place.description }}</span>
             </div>
-            <span class="place-distance">{{ place.distance }}</span>
+            <div class="place-meta">
+              <span class="place-distance">{{ place.distance }}</span>
+              <span v-if="place.estimatedCost" class="place-cost">{{ place.estimatedCost }}</span>
+            </div>
           </div>
         </div>
 
@@ -89,8 +116,10 @@
         <v-divider></v-divider>
 
         <v-list density="compact" nav>
-          <v-list-item prepend-icon="mdi-forum" :title="selectedPlace?.type" value="Type"></v-list-item>
-          <v-list-item prepend-icon="mdi-forum" :title="selectedPlace?.distance" value="distance"></v-list-item>
+          <v-list-item prepend-icon="mdi-tag" :title="selectedPlace?.type" value="Type"></v-list-item>
+          <v-list-item prepend-icon="mdi-map-marker-distance" :title="selectedPlace?.distance" value="distance"></v-list-item>
+          <v-list-item v-if="selectedPlace?.estimatedCost" prepend-icon="mdi-currency-eur" :title="selectedPlace.estimatedCost" value="cost"></v-list-item>
+          <v-list-item v-if="selectedPlace?.description" :title="selectedPlace.description" value="description"></v-list-item>
         </v-list>
 
       </v-navigation-drawer>
@@ -101,55 +130,106 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
 
+// Protect this route - require authentication
+definePageMeta({
+  middleware: "auth",
+});
+
 const drawer = ref(false);
 const selectedPlace = ref(null);
 
-// Assuming VBtn is a registered component
-// import { VBtn } from 'vuetify/components';
-
 const router = useRouter();
-const { signout } = useAuth();
+const { signout, isAuthenticated } = useAuth();
+const { getRecommendations } = useApi();
+
+// Trip plan data
+const tripPlan = ref({
+  budget: 0,
+  currentLocation: [53.3498, -6.2603],
+  duration: 0,
+  interests: [],
+});
+
+// Loading and error states
+const isLoading = ref(false);
+const errorMessage = ref('');
 
 // Sign out handler
 const handleSignOut = async () => {
   await signout();
 };
 
-// Mock data for recommended places (based on prototype)
-const recommendedPlaces = ref([
-  {
-    name: "The Lough Park",
-    type: "Nature",
-    distance: "1.6km",
-    latlng: [51.889, -8.484], // Estimated coordinates
-    featured: true,
-  },
-  {
-    name: "Bell's Field",
-    type: "Nature",
-    distance: "2.9km",
-    latlng: [51.903, -8.470], // Estimated coordinates
-  },
-  {
-    name: "Tramore Valley Park",
-    type: "Nature",
-    distance: "3.6km",
-    latlng: [51.878, -8.459], // Estimated coordinates
-  },
-  {
-    name: "English Market",
-    type: "Shopping",
-    distance: "1.9km",
-    latlng: [51.897, -8.474], // Estimated coordinates
-  },
-]);
+// Recommended places
+const recommendedPlaces = ref([]);
+
+// Load trip plan from sessionStorage and fetch recommendations
+onMounted(async () => {
+  // Check authentication first
+  if (!isAuthenticated()) {
+    router.push("/signin");
+    return;
+  }
+
+  // Get trip plan data from sessionStorage
+  if (process.client) {
+    const storedPlan = sessionStorage.getItem('tripPlan');
+    if (storedPlan) {
+      try {
+        tripPlan.value = JSON.parse(storedPlan);
+      } catch (e) {
+        console.error('Error parsing trip plan:', e);
+      }
+    }
+  }
+
+  // Initialize map first
+  await initializeMap();
+  
+  // Then fetch recommendations
+  await fetchRecommendations();
+});
+
+// Fetch recommendations from API
+const fetchRecommendations = async () => {
+  isLoading.value = true;
+  errorMessage.value = '';
+
+  try {
+    const response = await getRecommendations(
+      tripPlan.value.budget,
+      tripPlan.value.duration,
+      tripPlan.value.currentLocation,
+      tripPlan.value.interests
+    );
+
+    if (response.status === 200 && response.data) {
+      recommendedPlaces.value = response.data.map((place) => ({
+        name: place.name,
+        type: place.type,
+        description: place.description || '',
+        estimatedCost: place.estimatedCost || 'Varies',
+        distance: place.distance || 'Unknown',
+        latlng: place.latlng || [51.897, -8.475],
+        featured: place.featured || false,
+      }));
+    } else {
+      errorMessage.value = response.message || 'Failed to load recommendations';
+    }
+  } catch (error) {
+    console.error('Error fetching recommendations:', error);
+    const errorMsg = error instanceof Error ? error.message : 'Failed to load recommendations. Please try again.';
+    errorMessage.value = errorMsg;
+  } finally {
+    isLoading.value = false;
+  }
+};
 
 // Map instance reference
 let map = null;
 
-// Initialize map (logic from plan/index.vue)
-onMounted(async () => {
-  if (process.client) {
+// Initialize map function
+const initializeMap = async () => {
+  if (process.client && !map) {
     // Dynamically import Leaflet
     const leaflet = await import("leaflet");
     const L = leaflet.default;
@@ -170,7 +250,7 @@ onMounted(async () => {
       const mapElement = document.getElementById("map-recommendations");
       if (mapElement && !map) {
         // Initialize map, centered on Cork
-        map = L.map("map-recommendations").setView([51.893, -8.475], 14); // Adjusted center point and zoom level
+        map = L.map("map-recommendations").setView([51.893, -8.475], 14);
 
         // Add OpenStreetMap tile layer
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -179,20 +259,57 @@ onMounted(async () => {
           maxZoom: 19,
         }).addTo(map);
 
-        // Iterate over recommended places and add markers to the map
-        recommendedPlaces.value.forEach(place => {
-          L.marker(place.latlng)
-              .addTo(map)
-              .bindPopup(`<b>${place.name}</b><br>${place.type}`);
-        });
-
-        // (Optional) Automatically adjust map view to include all markers
-        // const bounds = L.latLngBounds(recommendedPlaces.value.map(p => p.latlng));
-        // map.fitBounds(bounds.pad(0.1)); // pad(0.1) adds a little padding
+        // Update map with recommendations
+        updateMapMarkers();
       }
     }, 100);
   }
-});
+};
+
+// Update map markers when recommendations change
+const updateMapMarkers = async () => {
+  if (!map || !recommendedPlaces.value.length) return;
+
+  // Import Leaflet
+  const leaflet = await import("leaflet");
+  const L = leaflet.default;
+
+  // Clear existing markers
+  map.eachLayer((layer) => {
+    if (layer instanceof L.Marker) {
+      map.removeLayer(layer);
+    }
+  });
+
+  // Add markers for each recommended place
+  recommendedPlaces.value.forEach((place) => {
+    if (place.latlng && place.latlng.length === 2) {
+      L.marker(place.latlng)
+        .addTo(map)
+        .bindPopup(`<b>${place.name}</b><br>${place.type}${place.estimatedCost ? '<br>' + place.estimatedCost : ''}`);
+    }
+  });
+
+  // Adjust map view to include all markers if there are any
+  if (recommendedPlaces.value.length > 0) {
+    const validLatLngs = recommendedPlaces.value
+      .filter(p => p.latlng && p.latlng.length === 2)
+      .map(p => p.latlng);
+    
+    if (validLatLngs.length > 0) {
+      const bounds = L.latLngBounds(validLatLngs);
+      map.fitBounds(bounds.pad(0.1));
+    }
+  }
+};
+
+// Watch for changes in recommended places and update map
+watch(recommendedPlaces, async () => {
+  if (map && recommendedPlaces.value.length > 0) {
+    await updateMapMarkers();
+  }
+}, { deep: true });
+
 
 // Destroy map on component unmount
 onUnmounted(() => {
@@ -393,12 +510,38 @@ onUnmounted(() => {
   color: var(--color-secondary-text, #667085);
 }
 
+.place-description {
+  font-size: 0.85rem;
+  color: var(--color-secondary-text, #667085);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+.place-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  margin-left: 16px;
+}
+
 .place-distance {
   font-weight: 600;
   font-size: 1rem;
   color: var(--color-main-text, #333);
-  white-space: nowrap; /* Prevent distance from wrapping */
-  margin-left: 16px;
+  white-space: nowrap;
+}
+
+.place-cost {
+  font-size: 0.85rem;
+  color: var(--color-secondary-text, #667085);
+  font-weight: 500;
+}
+
+.loading-container {
+  text-align: center;
+  padding: 40px;
+  color: var(--color-main-text, #333);
 }
 
 .map-container {

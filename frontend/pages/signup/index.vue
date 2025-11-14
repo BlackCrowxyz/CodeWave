@@ -1,6 +1,6 @@
 <template>
   <div class="signup-page">
-    <VImg src="/assets/landing-bg.jpeg" cover class="bg-image" />
+    <VImg src="~/assets/landing-bg.jpeg" cover class="bg-image" />
 
     <div class="topbar">
       <NuxtLink to="/signin">
@@ -75,11 +75,23 @@
                 class="primary-btn"
                 size="large"
                 :loading="isLoading"
+                :disabled="isLoading"
               >
-                Sign Up
+                {{ isLoading ? "Signing Up..." : "Sign Up" }}
               </VBtn>
             </div>
           </VForm>
+
+          <!-- Error Message -->
+          <VAlert
+            v-if="errorMessage"
+            type="error"
+            class="mt-3"
+            :text="errorMessage"
+            variant="outlined"
+            closable
+            @click:close="errorMessage = ''"
+          />
 
           <VAlert
             v-if="emailChecked && emailExists"
@@ -105,22 +117,26 @@
 </template>
 
 <script setup>
-const runtimeConfig = useRuntimeConfig();
-const API_BASE = runtimeConfig.public?.apiBase || "http://localhost:3001/api/v1";
+// Redirect to dashboard if already authenticated
+definePageMeta({
+  middleware: "guest",
+});
 
 const route = useRoute();
 const router = useRouter();
 
 const name = ref("");
-const email = ref(route.query.email || "");
+const email = ref(typeof route.query.email === 'string' ? route.query.email : "");
 const password = ref("");
 const confirmPassword = ref("");
 
 const emailChecked = ref(false);
 const emailExists = ref(false);
 const isLoading = ref(false);
+const errorMessage = ref("");
 
 const { ruleEmail, rulePassLen, ruleRequired } = useFormRules();
+const { signup } = useApi();
 
 const rulePasswordMatch = (value) => {
   return value === password.value || "Passwords do not match";
@@ -141,53 +157,61 @@ onMounted(async () => {
 });
 
 const submit = async () => {
-  // Validate all fields
-  if (!validateField([ruleRequired, ruleEmail], email.value)) return;
-  if (!validateField([ruleRequired], name.value)) return;
-  if (!validateField([ruleRequired, rulePassLen], password.value)) return;
-  if (!validateField([ruleRequired, rulePasswordMatch], confirmPassword.value))
-    return;
-
-  // Skip remote email existence check (not available on backend). Rely on 409 from /signup
-  emailChecked.value = true;
+  // Clear previous errors
+  errorMessage.value = "";
   emailExists.value = false;
+
+  // Validate all fields
+  if (!validateField([ruleRequired, ruleEmail], email.value)) {
+    errorMessage.value = "Please enter a valid email address";
+    return;
+  }
+  if (!validateField([ruleRequired], name.value)) {
+    errorMessage.value = "Please enter your name";
+    return;
+  }
+  if (!validateField([ruleRequired, rulePassLen], password.value)) {
+    errorMessage.value = "Password must be at least 6 characters long";
+    return;
+  }
+  if (!validateField([ruleRequired, rulePasswordMatch], confirmPassword.value)) {
+    errorMessage.value = "Passwords do not match";
+    return;
+  }
 
   isLoading.value = true;
 
   try {
-    const body = {
-      name: name.value,
-      email: email.value,
-      password: password.value,
-    };
+    const response = await signup(name.value, email.value, password.value);
 
-    const response = await fetch(`${API_BASE}/signup`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-
-    const result = await response.json();
-
-    if (response.ok) {
+    if (response.status === 201 && response.data) {
       // Store token and user data (consistent with signin flow)
-      if (result.data?.accessToken) {
-        localStorage.setItem('accessToken', result.data.accessToken);
-        localStorage.setItem('userId', String(result.data.userId || result.data.id || ''));
-        localStorage.setItem('userName', result.data.name || '');
-        localStorage.setItem('userEmail', result.data.email || '');
-        localStorage.setItem('userRole', result.data.role || 'user');
+      if (response.data.accessToken) {
+        localStorage.setItem('accessToken', response.data.accessToken);
+        localStorage.setItem('userId', String(response.data.userId || ''));
+        localStorage.setItem('userName', response.data.name || '');
+        localStorage.setItem('userEmail', response.data.email || '');
+        localStorage.setItem('userRole', response.data.role || 'user');
       }
 
       // Redirect to dashboard
-      router.push("/dashboard");
+      await navigateTo("/dashboard");
     } else {
-      console.error("Signup failed:", result.message);
-      alert(result.message || "Signup failed. Please try again.");
+      errorMessage.value = response.message || "Signup failed. Please try again.";
     }
   } catch (error) {
     console.error("Signup error:", error);
-    alert("An error occurred. Please try again.");
+    
+    // Handle specific error cases
+    if (error.message && error.message.includes("already exists")) {
+      emailExists.value = true;
+      emailChecked.value = true;
+      errorMessage.value = "This email already has an account. Please sign in instead.";
+    } else if (error.message && error.message.includes("Network error")) {
+      errorMessage.value = "Cannot connect to server. Please check your connection and try again.";
+    } else {
+      errorMessage.value = error.message || "An error occurred. Please try again.";
+    }
   } finally {
     isLoading.value = false;
   }

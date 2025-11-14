@@ -5,27 +5,38 @@ const errorHandling = (err, req, res, next) => {
   let error = { ...err };
   error.message = err.message;
 
-  // Mongoose bad ObjectId
-  if (err.name === 'CastError') {
-    const message = 'Resource not found';
+  // PostgreSQL unique violation (duplicate key)
+  if (err.code === '23505') {
+    const message = 'Duplicate field value entered';
+    error = { message, statusCode: 409 };
+  }
+
+  // PostgreSQL foreign key violation
+  if (err.code === '23503') {
+    const message = 'Referenced resource not found';
     error = { message, statusCode: 404 };
   }
 
-  // Mongoose duplicate key
-  if (err.code === 11000) {
-    const message = 'Duplicate field value entered';
+  // PostgreSQL not null violation
+  if (err.code === '23502') {
+    const message = 'Required field is missing';
     error = { message, statusCode: 400 };
   }
 
-  // Mongoose validation error
-  if (err.name === 'ValidationError') {
-    const message = Object.values(err.errors).map(val => val.message);
+  // PostgreSQL check constraint violation
+  if (err.code === '23514') {
+    const message = 'Invalid data provided';
     error = { message, statusCode: 400 };
   }
 
-  res.status(error.statusCode || 500).json({
-    success: false,
-    error: error.message || 'Server Error'
+  // Default to 500 if no specific status code
+  const statusCode = error.statusCode || 500;
+  const message = error.message || 'Server Error';
+
+  res.status(statusCode).json({
+    status: statusCode,
+    message: message,
+    data: null
   });
 };
 

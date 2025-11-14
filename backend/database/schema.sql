@@ -112,6 +112,17 @@ CREATE TABLE IF NOT EXISTS gtfs.feed_info (
     feed_contact_email text
 );
 
+-- Users table: Application users for authentication
+CREATE TABLE IF NOT EXISTS gtfs.users (
+    id SERIAL PRIMARY KEY,
+    name text NOT NULL,
+    email text NOT NULL UNIQUE,
+    password text NOT NULL,
+    role text NOT NULL DEFAULT 'user',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Create indexes for better query performance
 CREATE INDEX IF NOT EXISTS idx_stop_times_stop_id ON gtfs.stop_times(stop_id);
 CREATE INDEX IF NOT EXISTS idx_stop_times_trip_id ON gtfs.stop_times(trip_id);
@@ -121,4 +132,5 @@ CREATE INDEX IF NOT EXISTS idx_routes_agency_id ON gtfs.routes(agency_id);
 CREATE INDEX IF NOT EXISTS idx_stops_location ON gtfs.stops(stop_lat, stop_lon);
 CREATE INDEX IF NOT EXISTS idx_calendar_dates_service_id ON gtfs.calendar_dates(service_id);
 CREATE INDEX IF NOT EXISTS idx_shapes_shape_id ON gtfs.shapes(shape_id);
+CREATE INDEX IF NOT EXISTS idx_users_email ON gtfs.users(email);
 

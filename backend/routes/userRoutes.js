@@ -13,6 +13,7 @@ import authJwt from '../config/authJwt.js';
 router.post('/users', createUser);
 
 // Protected routes (require authentication)
+router.get('/users', authJwt.verifyToken, getAllUsers);
 router.get('/users/:id', authJwt.verifyToken, getUserById);
 router.put('/users/:id', authJwt.verifyToken, updateUser);
 router.delete('/users/:id', authJwt.verifyToken, authJwt.verifyRole(['admin']), deleteUser);

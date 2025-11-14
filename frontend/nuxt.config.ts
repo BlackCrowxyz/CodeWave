@@ -18,12 +18,17 @@ export default defineNuxtConfig({
 
   devtools: { enabled: true },
 
+  // Dev server configuration
+  devServer: {
+    port: 3000,
+  },
+
   // Runtime config
   runtimeConfig: {
     // Private keys (only available on server-side)
     // Public keys (exposed to client-side)
     public: {
-      apiBase: process.env.API_BASE_URL || "http://localhost:3001/api/v1",
+      apiBase: process.env.API_BASE_URL || "http://localhost:8000/api/v1",
     },
   },
 
