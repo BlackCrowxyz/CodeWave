@@ -31,8 +31,14 @@
             size="large"
           />
 
-          <VBtn class="primary-btn" size="large" @click="handleGetStarted">
-            Get Started
+          <VBtn 
+            class="primary-btn" 
+            size="large" 
+            @click="handleGetStarted"
+            :loading="loading"
+            :disabled="loading"
+          >
+            {{ loading ? "Checking..." : "Get Started" }}
           </VBtn>
         </div>
       </div>
@@ -43,13 +49,43 @@
 <script setup>
 // Landing route page
 const email = ref("");
+const loading = ref(false);
+const { checkEmail } = useApi();
 
-const handleGetStarted = () => {
-  // Navigate to signup page, optionally with pre-filled email
-  if (email.value) {
-    navigateTo(`/signup?email=${encodeURIComponent(email.value)}`);
-  } else {
-    navigateTo("/signup");
+const handleGetStarted = async () => {
+  // If no email provided, go to signup
+  if (!email.value) {
+    await navigateTo("/signup");
+    return;
+  }
+
+  // Validate email format
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email.value)) {
+    // If invalid email, still go to signup (they can fix it there)
+    await navigateTo(`/signup?email=${encodeURIComponent(email.value)}`);
+    return;
+  }
+
+  loading.value = true;
+
+  try {
+    // Check if email already exists
+    const response = await checkEmail(email.value);
+    
+    if (response.data?.exists) {
+      // Email exists, redirect to signin
+      await navigateTo(`/signin?email=${encodeURIComponent(email.value)}`);
+    } else {
+      // Email doesn't exist, redirect to signup
+      await navigateTo(`/signup?email=${encodeURIComponent(email.value)}`);
+    }
+  } catch (error) {
+    // On error, default to signup page
+    console.error("Error checking email:", error);
+    await navigateTo(`/signup?email=${encodeURIComponent(email.value)}`);
+  } finally {
+    loading.value = false;
   }
 };
 </script>

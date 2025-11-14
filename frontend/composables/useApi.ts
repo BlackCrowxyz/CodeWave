@@ -61,6 +61,13 @@ export const useApi = () => {
     })
   }
 
+  const checkEmail = async (email: string) => {
+    return await apiRequest('/check-email', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    })
+  }
+
   // User methods
   const getUsers = async () => {
     return await apiRequest('/users')
@@ -88,6 +95,7 @@ export const useApi = () => {
     signin,
     signup,
     signout,
+    checkEmail,
     // Users
     getUsers,
     getUserById,

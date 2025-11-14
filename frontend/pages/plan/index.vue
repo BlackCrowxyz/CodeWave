@@ -135,18 +135,14 @@ const progressPercentage = computed(() => {
   return (currentStep.value / 3) * 100;
 });
 
+const { signout } = useAuth();
+
 const goToHome = () => {
   router.push("/dashboard");
 };
 
-const handleSignOut = () => {
-  if (process.client) {
-    localStorage.removeItem("auth_token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("userEmail");
-    localStorage.removeItem("userName");
-  }
-  router.push("/signin");
+const handleSignOut = async () => {
+  await signout();
 };
 
 const handleContinue = () => {
