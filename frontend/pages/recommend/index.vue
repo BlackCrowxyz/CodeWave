@@ -7,8 +7,6 @@
       <VBtn class="sign-out-btn" variant="outlined" @click="handleSignOut">Sign Out</VBtn>
     </header>
 
-    {{ tripPlan.plan?.lat }}
-
     <!-- Your Trip Plan Module -->
     <section class="initial-inputs">
       <h1 class="title">Your Trip Plan</h1>
@@ -112,6 +110,8 @@
               drawer = !drawer;
               selectedPlace = place;
             "
+            @mouseover="() => handleMouseOver(place.name)"
+            @mouseleave="() => handleMouseLeave(place.name)"
           >
             <div class="place-info">
               <span class="place-name"
@@ -182,6 +182,10 @@ definePageMeta({
 
 const drawer = ref(false);
 const selectedPlace = ref(null);
+const hoveredPlace = ref(null);
+
+// Map to hold Leaflet marker instances keyed by place name
+const markersMap = {};
 
 const router = useRouter();
 const { signout, isAuthenticated } = useAuth();
@@ -324,6 +328,68 @@ const initializeMap = async () => {
   }
 };
 
+// Handle mouse over event
+const handleMouseOver = async (placeName) => {
+  hoveredPlace.value = placeName;
+  await highlightMarker(placeName);
+};
+
+// Handle mouse leave event
+const handleMouseLeave = async (placeName) => {
+  hoveredPlace.value = null;
+  await resetMarker(placeName);
+};
+
+// Highlight a marker by name (open popup and change icon)
+const highlightMarker = async (placeName) => {
+  if (!map) return;
+  const marker = markersMap[placeName];
+  if (!marker) return;
+
+  try {
+    const leaflet = await import('leaflet');
+    const L = leaflet.default;
+
+    // Save original icon to restore later
+    if (!marker._originalIcon) {
+      marker._originalIcon = marker.options.icon;
+    }
+
+    // Use a div icon for highlight (uses CSS .custom-red-marker)
+    const highlightIcon = L.divIcon({
+      className: 'custom-red-marker',
+      html: '<div class="red-marker"></div>',
+      iconSize: [16, 16],
+      iconAnchor: [8, 8],
+    });
+
+    marker.setIcon(highlightIcon);
+    if (marker.getPopup()) {
+      marker.openPopup();
+    }
+  } catch (e) {
+    console.error('Error highlighting marker:', e);
+  }
+};
+
+// Reset marker (restore original icon and close popup)
+const resetMarker = async (placeName) => {
+  if (!map) return;
+  const marker = markersMap[placeName];
+  if (!marker) return;
+
+  try {
+    if (marker._originalIcon) {
+      marker.setIcon(marker._originalIcon);
+    }
+    if (marker.getPopup()) {
+      marker.closePopup();
+    }
+  } catch (e) {
+    console.error('Error resetting marker:', e);
+  }
+};
+
 // Update map markers when recommendations change
 const updateMapMarkers = async () => {
   if (!map || !recommendedPlaces.value.length) return;
@@ -332,7 +398,14 @@ const updateMapMarkers = async () => {
   const leaflet = await import('leaflet');
   const L = leaflet.default;
 
-  // Clear existing markers
+  // Clear existing markers and markersMap
+  Object.keys(markersMap).forEach((k) => {
+    try {
+      map.removeLayer(markersMap[k]);
+    } catch (e) {}
+  });
+  for (const k in markersMap) delete markersMap[k];
+
   map.eachLayer((layer) => {
     if (layer instanceof L.Marker) {
       map.removeLayer(layer);
@@ -357,16 +430,18 @@ const updateMapMarkers = async () => {
       .bindPopup('<b>Your Selected Location</b>');
   }
 
-  // Add markers for each recommended place
+  // Add markers for each recommended place and store references
   recommendedPlaces.value.forEach((place) => {
     if (place.latlng && place.latlng.length === 2) {
-      L.marker(place.latlng)
-        .addTo(map)
-        .bindPopup(
-          `<b>${place.name}</b><br>${place.type}${
-            place.estimatedCost ? '<br>' + place.estimatedCost : ''
-          }`
-        );
+      const marker = L.marker(place.latlng).addTo(map);
+      marker.bindPopup(
+        `<b>${place.name}</b><br>${place.type}${
+          place.estimatedCost ? '<br>' + place.estimatedCost : ''
+        }`
+      );
+
+      // store marker by name (assumes unique names)
+      markersMap[place.name] = marker;
     }
   });
 
@@ -402,6 +477,13 @@ onUnmounted(() => {
     map.remove();
     map = null;
   }
+
+  // clear markers map
+  Object.keys(markersMap).forEach((k) => {
+    try {
+      delete markersMap[k];
+    } catch (e) {}
+  });
 });
 </script>
 
