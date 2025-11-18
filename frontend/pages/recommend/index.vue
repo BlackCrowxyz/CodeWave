@@ -7,6 +7,8 @@
       <VBtn class="sign-out-btn" variant="outlined" @click="handleSignOut">Sign Out</VBtn>
     </header>
 
+    {{ tripPlan.plan?.lat }}
+
     <!-- Your Trip Plan Module -->
     <section class="initial-inputs">
       <h1 class="title">Your Trip Plan</h1>
@@ -337,6 +339,24 @@ const updateMapMarkers = async () => {
     }
   });
 
+  const selectedLocation = tripPlan.value.plan;
+
+  if (selectedLocation && selectedLocation.lat && selectedLocation.lon) {
+    const customIcon = L.icon({
+      iconUrl: 'https://openclipart.org/image/800px/192591',
+      iconSize: [32, 32], // adjust to the actual/desired image size
+      iconAnchor: [16, 32], // point of the icon which corresponds to marker location
+      popupAnchor: [0, -32], // where the popup should open relative to the icon anchor
+    });
+
+    L.marker([selectedLocation.lat, selectedLocation.lon], {
+      icon: customIcon,
+      title: 'Selected Location',
+    })
+      .addTo(map)
+      .bindPopup('<b>Your Selected Location</b>');
+  }
+
   // Add markers for each recommended place
   recommendedPlaces.value.forEach((place) => {
     if (place.latlng && place.latlng.length === 2) {
@@ -659,5 +679,13 @@ onUnmounted(() => {
     width: 100%;
     justify-content: center;
   }
+}
+.custom-red-marker .red-marker {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: red;
+  border: 2px solid white;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
 }
 </style>
