@@ -208,3 +208,25 @@ function getFallbackRecommendations(currentLocation) {
         },
     ];
 }
+
+
+/*
+Example cURL to test the endpoint:
+
+curl --location 'http://localhost:3001/api/v1/recommendations' \
+--header 'Content-Type: application/json' \
+--header 'x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJuYW1lIjoiSm9obiBEb2UiLCJyb2xlIjoidXNlciIsImlhdCI6MTc2MzQ2MzAwNCwiZXhwIjoxNzYzNjM1ODA0fQ.Qo-ViHXRh6XnNfSv80ZwuVp_imI0GrQXpBPMakwTGyc' \
+--data '{
+    "budget": 150,
+    "currentLocation": [
+        51.8979,
+        -8.4706
+    ],
+    "duration": 3,
+    "interests": [
+        "nature",
+        "food",
+        "history"
+    ]
+}'
+*/
