@@ -106,7 +106,7 @@ const submit = () => {
 
     localStorage.setItem('tripPlan', JSON.stringify(next))
   }
-  router.push('/dashboard')
+  router.push("/recommend");
 }
 </script>
 

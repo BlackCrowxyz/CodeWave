@@ -17,6 +17,13 @@ const handleResponse = (res, status, message, data = null) => {
  */
 export const getRecommendations = async (req, res, next) => {
     try {
+        console.log({ currentLocation: req.body.currentLocation });
+
+        // // wait for 4 seconds to simulate delay
+        // await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // return handleResponse(res, 200, "Recommendations retrieved (using fallback)", getFallbackRecommendations(req.body.currentLocation));
+
         const { budget, currentLocation, duration, interests } = req.body;
 
         // Validation
@@ -28,7 +35,7 @@ export const getRecommendations = async (req, res, next) => {
         const interestsText = interests && interests.length > 0 ? interests.join(', ') : 'No specific preferences';
 
         // Build the prompt for the LLM
-        const prompt = `You are a travel recommendation assistant for Ireland. Based on the following trip details, recommend 5-8 places to visit in Ireland that match the user's preferences.
+        const prompt = `You are a travel recommendation assistant for Ireland. Based on the following trip details, recommend 3-5 places to visit in Ireland that match the user's preferences.
 
 Trip Details:
 - Budget: €${budget}
@@ -46,7 +53,7 @@ Please provide recommendations in JSON format as an array of objects. Each objec
 - lng: number (longitude coordinate)
 - featured: boolean (true for top recommendations)
 
-Focus on places in Ireland, especially around the specified location. Make the recommendations realistic and budget-appropriate.
+Focus recommendations on places within Ireland that are close to the user’s selected coordinates. Prioritize locations in the immediate surrounding area and ensure all suggested places are realistically nearby and suitable for the given budget and duration.
 
 Return ONLY valid JSON array, no markdown, no code blocks, just the array.`;
 
@@ -136,7 +143,7 @@ Return ONLY valid JSON array, no markdown, no code blocks, just the array.`;
         const { currentLocation } = req.body;
         const fallbackLocation = currentLocation && Array.isArray(currentLocation) && currentLocation.length === 2
             ? currentLocation
-            : [53.3498, -6.2603]; // Default to Dublin
+            : [51.897, -8.475]; // Default to Cork
         return handleResponse(res, 200, "Recommendations retrieved (using fallback)", getFallbackRecommendations(fallbackLocation));
     }
 };
@@ -146,10 +153,10 @@ Return ONLY valid JSON array, no markdown, no code blocks, just the array.`;
  */
 function getFallbackRecommendations(currentLocation) {
     // Default recommendations for Ireland
-    // Use provided location or default to Dublin
+    // Use provided location or default to Cork
     const [lat, lng] = currentLocation && Array.isArray(currentLocation) && currentLocation.length === 2
         ? currentLocation
-        : [53.3498, -6.2603];
+        : [51.897, -8.475]; // Cork coordinates
 
     return [
         {
