@@ -2,12 +2,12 @@
   <div class="recommend">
     <!-- Top Header -->
     <header class="top-bar">
-      <div class="brand">TripWave</div>
-      <!-- Assuming VBtn is from Vuetify or a similar library -->
+      <div class="brand" @click="router.push('/dashboard')">TripWave</div>
+      
       <VBtn class="sign-out-btn" variant="outlined" @click="handleSignOut">Sign Out</VBtn>
     </header>
 
-    <!-- Your Trip Plan Module -->
+   
     <section class="initial-inputs">
       <h1 class="title">Your Trip Plan</h1>
       <div class="trip-details" v-if="tripPlan.plan">
@@ -55,12 +55,66 @@
       </div>
     </section>
 
-    <!-- New: Recommended Places Module -->
     <section class="recommendations">
       <div class="recommendations-header">
         <h2 class="recommendations-title">Recommended Places</h2>
         <p class="recommendations-subtitle">Place that match your interests</p>
-        <!-- "Powered by AI" (Optional, based on prototype) -->
+        <div class="mt-4">
+          <VBtn
+            color="primary"
+            prepend-icon="mdi-bus"
+            :loading="loadingRoute"
+            @click="toggleBusRoute"
+          >
+            {{ showBusRoute ? 'Hide Bus Route' : 'View Live Bus Routes' }}
+          </VBtn>
+        </div>
+        
+        <!-- Inline Bus Route Display -->
+        <div v-if="showBusRoute && suggestedRoute" class="inline-route-card mt-4">
+          <div class="d-flex align-center mb-2">
+            <VIcon icon="mdi-map-marker-path" color="primary" class="mr-2" />
+            <h3 class="text-h6 font-weight-bold mb-0">Suggested Route</h3>
+          </div>
+          
+          <div class="route-steps">
+            <div class="step-item">
+              <VIcon icon="mdi-walk" class="mr-3" color="grey-darken-1" />
+              <span>Walk to <strong>{{ suggestedRoute.start_stop_name }}</strong></span>
+            </div>
+            <div class="step-item">
+              <VIcon icon="mdi-bus" class="mr-3" color="primary" />
+              <span>Take Route <strong>{{ suggestedRoute.route_short_name }}</strong></span>
+            </div>
+            <div class="step-item">
+              <VIcon icon="mdi-flag-checker" class="mr-3" color="success" />
+              <span>Get off at <strong>{{ suggestedRoute.end_stop_name }}</strong></span>
+            </div>
+            <div v-if="suggestedRoute.walking_time_to_dest > 0" class="step-item">
+              <VIcon icon="mdi-walk" class="mr-3" color="grey-darken-1" />
+              <span>Walk to destination (~{{ suggestedRoute.walking_time_to_dest }} min)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Walking Route Fallback -->
+        <div v-if="showBusRoute && !suggestedRoute && walkingRoute" class="inline-route-card mt-4">
+          <div class="d-flex align-center mb-2">
+            <VIcon icon="mdi-walk" color="success" class="mr-2" />
+            <h3 class="text-h6 font-weight-bold mb-0">Suggested Option: Walk</h3>
+          </div>
+          <div class="route-steps">
+             <div class="step-item">
+              <VIcon icon="mdi-walk" class="mr-3" color="success" />
+              <span>Walk to destination (~{{ walkingRoute.duration }} min, {{ walkingRoute.distance }} km)</span>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="showBusRoute && !suggestedRoute && !walkingRoute && !loadingRoute" class="mt-4 text-caption text-grey">
+          No direct bus route found.
+        </div>
+
         <span class="powered-by">
           <svg
             width="16"
@@ -92,9 +146,9 @@
       />
 
       <!-- Recommendations Content -->
-      <!-- !isLoading && -->
+    
       <div v-if="!errorMessage" class="content-layout">
-        <!-- Left: Places List -->
+       
         <div class="places-list">
           <div v-if="isLoading" class="loading-container">
             <p>
@@ -105,9 +159,9 @@
             v-else
             v-for="place in recommendedPlaces"
             :key="place.name"
-            class="place-item"
+            :class="['place-item', { 'selected-place': selectedPlace?.name === place.name }]"
             @click="
-              drawer = !drawer;
+              drawer = true;
               selectedPlace = place;
             "
             @mouseover="() => handleMouseOver(place.name)"
@@ -133,14 +187,17 @@
           </div>
         </div>
 
-        <!-- Right: Map -->
+       
         <div class="map-container">
           <div id="map-recommendations"></div>
         </div>
       </div>
 
       <v-navigation-drawer v-model="drawer" temporary location="right" width="500">
-        <v-list-item :title="selectedPlace?.name"></v-list-item>
+        <div class="d-flex justify-space-between align-center pa-4">
+           <h3 class="text-h6 mb-0">{{ selectedPlace?.name }}</h3>
+           <v-btn icon="mdi-close" variant="text" density="comfortable" @click="drawer = false"></v-btn>
+        </div>
 
         <v-divider></v-divider>
 
@@ -173,9 +230,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, watch } from 'vue';
+import axios from 'axios';
 
-// Protect this route - require authentication
+
 definePageMeta({
   middleware: 'auth',
 });
@@ -193,9 +251,13 @@ const { getRecommendations } = useApi();
 
 // Trip plan data
 const tripPlan = ref({
-  budget: 0,
-  currentLocation: [51.897, -8.475],
-  duration: 0,
+  plan: {
+    budget: 0,
+    address: 'Cork, Ireland',
+    lat: 51.8985,
+    lon: -8.4756,
+    duration: '1 day',
+  },
   interests: [],
 });
 
@@ -485,6 +547,100 @@ onUnmounted(() => {
     } catch (e) {}
   });
 });
+// Inline Bus Route Logic
+const showBusRoute = ref(false);
+const loadingRoute = ref(false);
+const suggestedRoute = ref(null);
+const walkingRoute = ref(null);
+
+const toggleBusRoute = async () => {
+  if (showBusRoute.value) {
+    showBusRoute.value = false;
+    return;
+  }
+
+  showBusRoute.value = true;
+  // Always fetch to ensure we have the latest (bus or walk)
+  await fetchBusRoute();
+};
+
+// Haversine formula to calculate distance in km
+const calculateDistance = (lat1, lon1, lat2, lon2) => {
+  const R = 6371; // Radius of the earth in km
+  const dLat = deg2rad(lat2 - lat1);
+  const dLon = deg2rad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const d = R * c; // Distance in km
+  return d;
+};
+
+const deg2rad = (deg) => {
+  return deg * (Math.PI / 180);
+};
+
+const fetchBusRoute = async () => {
+  loadingRoute.value = true;
+  suggestedRoute.value = null;
+  walkingRoute.value = null;
+
+  try {
+    const plan = tripPlan.value?.plan || {};
+    const startLat = plan.lat || 51.8985;
+    const startLon = plan.lon || -8.4756;
+    
+    let endLat, endLon;
+
+    if (selectedPlace.value && selectedPlace.value.latlng) {
+      endLat = selectedPlace.value.latlng[0];
+      endLon = selectedPlace.value.latlng[1];
+    } else if (recommendedPlaces.value.length > 0 && recommendedPlaces.value[0].latlng) {
+      endLat = recommendedPlaces.value[0].latlng[0];
+      endLon = recommendedPlaces.value[0].latlng[1];
+    }
+
+    if (startLat && startLon && endLat && endLon) {
+      try {
+        const routeRes = await axios.get('http://localhost:3001/api/v1/tfi/route', {
+           params: { startLat, startLon, endLat, endLon }
+        });
+        
+        if (routeRes.data && routeRes.data.route_short_name) {
+             suggestedRoute.value = routeRes.data;
+        } else {
+             // No bus route found, calculate walking
+             throw new Error("No bus route");
+        }
+      } catch (err) {
+          // Fallback to walking calculation
+          const dist = calculateDistance(startLat, startLon, endLat, endLon);
+          // Assume 5 km/h walking speed -> 12 min per km
+          const duration = Math.round(dist * 12);
+          walkingRoute.value = {
+              distance: dist.toFixed(2),
+              duration: duration
+          };
+      }
+    }
+  } catch (e) {
+    console.warn('Error finding route:', e);
+  } finally {
+    loadingRoute.value = false;
+  }
+};
+
+// Watch for selection changes to reset route if open
+watch(selectedPlace, () => {
+  if (showBusRoute.value) {
+    fetchBusRoute();
+  } else {
+    suggestedRoute.value = null;
+    walkingRoute.value = null;
+  }
+});
 </script>
 
 <style scoped>
@@ -510,6 +666,7 @@ onUnmounted(() => {
 .brand {
   font-weight: 800;
   font-size: clamp(24px, 4vw, 42px);
+  cursor: pointer;
 }
 
 .sign-out-btn {
@@ -654,6 +811,12 @@ onUnmounted(() => {
   transform: translateY(-2px);
 }
 
+.selected-place {
+  border-color: var(--color-primary, #007bff);
+  background-color: rgba(0, 123, 255, 0.05);
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+}
+
 .place-info {
   display: flex;
   flex-direction: column;
@@ -770,4 +933,26 @@ onUnmounted(() => {
   border: 2px solid white;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
 }
+
+.inline-route-card {
+  background-color: #f0f9ff; /* Light blue background */
+  border: 1px solid #b3e5fc;
+  border-radius: 8px;
+  padding: 16px;
+  text-align: left;
+}
+
+.route-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.step-item {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  color: #333;
+}
+
 </style>

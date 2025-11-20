@@ -4,6 +4,16 @@
 -- Create GTFS schema
 CREATE SCHEMA IF NOT EXISTS gtfs;
 
+-- Users table: Application users
+CREATE TABLE IF NOT EXISTS gtfs.users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(50) DEFAULT 'user',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 -- Agency table: Transit agencies with service represented in this dataset
 CREATE TABLE IF NOT EXISTS gtfs.agency (
     agency_id text PRIMARY KEY,
