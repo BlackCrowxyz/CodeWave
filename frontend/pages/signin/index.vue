@@ -95,25 +95,19 @@ const submit = async () => {
   errorMessage.value = "";
 
   try {
-    // const response = await signin(email.value, password.value);
-    //
-    // if (response.status === 200 && response.data) {
-    //   // Store authentication data
-    //   localStorage.setItem("accessToken", response.data.accessToken);
-    //   localStorage.setItem("userId", response.data.userId);
-    //   localStorage.setItem("userName", response.data.name);
-    //   localStorage.setItem("userEmail", response.data.email);
-    //   localStorage.setItem("userRole", response.data.role);
-    //   localStorage.setItem("accessToken", "fake-token");
-    //   // Navigate to dashboard or home page
-    //   await navigateTo("/dashboard");
-    // }
+    const response = await signin(email.value, password.value);
 
-    // 随便存点东西，骗过其他页面的简单检查（如果有的话）
-    localStorage.setItem("accessToken", "fake-token");
+    if (response.status === 200 && response.data) {
+      // Store authentication data
+      localStorage.setItem("accessToken", response.data.accessToken);
+      localStorage.setItem("userId", response.data.userId);
+      localStorage.setItem("userName", response.data.name);
+      localStorage.setItem("userEmail", response.data.email);
+      localStorage.setItem("userRole", response.data.role);
 
-    // 直接跳转
-    await navigateTo("/dashboard");
+      // Navigate to dashboard or home page
+      await navigateTo("/dashboard");
+    }
   } catch (error) {
     console.error("Signin error:", error);
     errorMessage.value = error.message || "Sign in failed. Please try again.";
@@ -142,7 +136,7 @@ const submit = async () => {
   top: 32px;
   left: 50%;
   transform: translateX(-50%);
-  color: var(--color-text-invert);
+  color: var(--color-text-light);
   font-weight: 800;
   font-size: clamp(32px, 6vw, 72px);
   letter-spacing: 2px;
@@ -170,25 +164,25 @@ const submit = async () => {
 
 .title {
   text-align: center;
-  color: var(--color-text-invert);
+  color: var(--color-text-light);
   margin: 6px 0 8px;
 }
 
 .label {
   display: inline-block;
   margin-bottom: 6px;
-  color: var(--color-text-secondary);
+  color: var(--color-text-muted);
 }
 
 .primary-btn {
-  background: var(--color-brand-primary);
-  color: var(--color-text-invert);
+  background: var(--color-primary);
+  color: var(--color-text-light);
 }
 
 .helper {
   margin-top: 18px;
   text-align: center;
-  color: var(--color-text-secondary);
+  color: var(--color-text-muted);
 }
 
 .link {

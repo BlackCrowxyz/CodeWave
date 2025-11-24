@@ -115,8 +115,8 @@ const handleSignOut = async () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: var(--color-brand-primary);
-  color: var(--color-text-invert);
+  background: var(--color-primary);
+  color: var(--color-text-light);
   padding: 14px 24px;
 }
 
@@ -126,14 +126,14 @@ const handleSignOut = async () => {
 }
 
 .signout-btn {
-  color: var(--color-text-invert);
+  color: var(--color-text-light);
   border-color: rgba(255, 255, 255, 0.8);
 }
 
 .intro {
   margin: 24px;
-  background: var(--color-brand-primary);
-  color: var(--color-text-invert);
+  background: var(--color-primary);
+  color: var(--color-text-light);
   border-radius: 14px;
   padding: 36px 20px;
   text-align: center;

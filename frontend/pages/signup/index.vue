@@ -216,8 +216,8 @@ const submit = async () => {
 }
 
 .sign-in-btn {
-  background: var(--color-brand-primary);
-  color: var(--color-text-invert);
+  background: var(--color-primary);
+  color: var(--color-text-light);
 }
 
 .content {
@@ -231,7 +231,7 @@ const submit = async () => {
 }
 
 .brand {
-  color: var(--color-text-invert);
+  color: var(--color-text-light);
   font-weight: 800;
   font-size: clamp(40px, 8vw, 72px);
   letter-spacing: 1px;
@@ -239,7 +239,7 @@ const submit = async () => {
 
 .byline {
   margin-top: 8px;
-  color: var(--color-text-secondary);
+  color: var(--color-text-muted);
 }
 
 .right {
@@ -252,14 +252,14 @@ const submit = async () => {
 }
 
 .tagline {
-  color: var(--color-text-invert);
+  color: var(--color-text-light);
   margin: 0 0 8px;
   font-weight: 700;
 }
 
 .sub {
   margin: 0 0 16px;
-  color: var(--color-text-secondary);
+  color: var(--color-text-muted);
 }
 
 .form-container {
@@ -281,8 +281,8 @@ const submit = async () => {
 }
 
 .primary-btn {
-  background: var(--color-brand-primary);
-  color: var(--color-text-invert);
+  background: var(--color-primary);
+  color: var(--color-text-light);
   padding: 0 28px;
   width: 100%;
   height: 48px;
@@ -290,7 +290,7 @@ const submit = async () => {
 
 .helper {
   text-align: center;
-  color: var(--color-text-secondary);
+  color: var(--color-text-muted);
 }
 
 .link {
