@@ -7,7 +7,6 @@ import errorHandling from './middlewares/errorHandling.js';
 import userRoutes from './routes/userRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import recommendationRoutes from './routes/recommendationRoutes.js';
-import tfiRoutes from './routes/tfiRoutes.js';
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -21,7 +20,6 @@ app.use(cors());
 app.use('/api/v1', userRoutes);
 app.use('/api/v1', authRoutes);
 app.use('/api/v1', recommendationRoutes);
-app.use('/api/v1', tfiRoutes);
 
 // Error Handling Middleware
 app.use(errorHandling)
