@@ -109,8 +109,8 @@ const handleGetStarted = async () => {
   z-index: 2;
 }
 .sign-in-btn {
-  background: var(--color-primary);
-  color: var(--color-text-light);
+  background: var(--color-brand-primary);
+  color: var(--color-text-invert);
 }
 .content {
   position: relative;
@@ -122,14 +122,14 @@ const handleGetStarted = async () => {
   padding: 24px clamp(16px, 4vw, 48px);
 }
 .brand {
-  color: var(--color-text-light);
+  color: var(--color-text-invert);
   font-weight: 800;
   font-size: clamp(40px, 8vw, 72px);
   letter-spacing: 1px;
 }
 .byline {
   margin-top: 8px;
-  color: var(--color-text-muted);
+  color: var(--color-text-secondary);
 }
 
 .right {
@@ -141,13 +141,13 @@ const handleGetStarted = async () => {
   color: var(--color-card-fg);
 }
 .tagline {
-  color: var(--color-text-light);
+  color: var(--color-text-invert);
   margin: 0 0 8px;
   font-weight: 700;
 }
 .sub {
   margin: 0 0 16px;
-  color: var(--color-text-muted);
+  color: var(--color-text-secondary);
 }
 .cta {
   display: flex;
@@ -164,8 +164,8 @@ const handleGetStarted = async () => {
   color: var(--color-card-fg);
 }
 .primary-btn {
-  background: var(--color-primary);
-  color: var(--color-text-light);
+  background: var(--color-brand-primary);
+  color: var(--color-text-invert);
   padding: 0 28px;
   width: min(400px);
 }

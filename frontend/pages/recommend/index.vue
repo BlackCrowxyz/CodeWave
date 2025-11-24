@@ -1,4 +1,4 @@
-<template>
+ <template>
   <div class="recommend">
     <!-- Top Header -->
     <header class="top-bar">
@@ -52,6 +52,17 @@
             <span class="detail-value">{{ tripPlan.interests.join(', ') }}</span>
           </div>
         </div>
+      </div>
+      <div class="mt-8 d-flex justify-center">
+        <VBtn
+            color="primary"
+            variant="tonal"
+            size="large"
+            prepend-icon="mdi-map-plus"
+            @click="router.push('/plan')"
+        >
+          Plan Another Trip
+        </VBtn>
       </div>
     </section>
 
@@ -224,6 +235,26 @@
             value="description"
           ></v-list-item>
         </v-list>
+
+        <v-divider class="my-3"></v-divider>
+
+        <div class="px-4 pb-4">
+          <h4 class="text-subtitle-1 font-weight-bold mb-3 d-flex align-center">
+            Location
+          </h4>
+
+          <div id="drawer-map" class="drawer-map-rounded mb-3"></div>
+
+          <div class="text-body-2 text-medium-emphasis mt-2">
+            <div class="d-flex align-start">
+              <v-icon icon="mdi-map-marker-radius-outline" size="small" class="mr-2 mt-1" color="grey-darken-1"></v-icon>
+              <span>
+                {{ currentAddress }}
+              </span>
+            </div>
+          </div>
+        </div>
+
       </v-navigation-drawer>
     </section>
   </div>
@@ -641,6 +672,88 @@ watch(selectedPlace, () => {
     walkingRoute.value = null;
   }
 });
+
+// --- Drawer Map Logic ---
+let drawerMap = null;
+
+const initDrawerMap = async () => {
+  if (!selectedPlace.value || !selectedPlace.value.latlng) return;
+
+  const [lat, lng] = selectedPlace.value.latlng;
+
+  if (process.client) {
+    const leaflet = await import('leaflet');
+    const L = leaflet.default;
+
+    await nextTick();
+    await new Promise(resolve => setTimeout(resolve, 300));
+
+    const mapContainer = document.getElementById('drawer-map');
+    if (!mapContainer) return;
+
+    if (drawerMap) {
+      drawerMap.remove();
+      drawerMap = null;
+    }
+
+    drawerMap = L.map('drawer-map', {
+      zoomControl: false,
+      attributionControl: false
+    }).setView([lat, lng], 15);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(drawerMap);
+
+    L.marker([lat, lng]).addTo(drawerMap);
+
+    drawerMap.invalidateSize();
+  }
+};
+
+watch(drawer, (isOpen) => {
+  if (isOpen) {
+    initDrawerMap();
+  }
+});
+
+watch(selectedPlace, (newPlace) => {
+  if (drawer.value && newPlace) {
+    initDrawerMap();
+  }
+});
+
+const currentAddress = ref('Loading address...');
+
+const fetchJson = async (url) => {
+  const res = await fetch(url, { headers: { Accept: "application/json" } });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return await res.json();
+};
+
+const getAddressFromCoords = async (lat, lon) => {
+  try {
+    const data = await fetchJson(
+        `https://nominatim.openstreetmap.org/reverse?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}&format=jsonv2&addressdetails=1`
+    );
+    return data?.display_name || `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+  } catch (e) {
+    console.warn("Geocoding failed:", e);
+    return `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+  }
+};
+
+watch(selectedPlace, async (newPlace) => {
+  if (drawer.value && newPlace) {
+    initDrawerMap();
+  }
+
+  if (newPlace && newPlace.latlng) {
+    currentAddress.value = "Locating...";
+    const [lat, lng] = newPlace.latlng;
+    currentAddress.value = await getAddressFromCoords(lat, lng);
+  } else {
+    currentAddress.value = "Unknown location";
+  }
+});
 </script>
 
 <style scoped>
@@ -658,8 +771,8 @@ watch(selectedPlace, () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: var(--color-primary, #007bff);
-  color: var(--color-text-light, #ffffff);
+  background: var(--color-brand-primary, #007bff);
+  color: var(--color-text-invert, #ffffff);
   padding: 14px 24px;
 }
 
@@ -670,9 +783,9 @@ watch(selectedPlace, () => {
 }
 
 .sign-out-btn {
-  color: var(--color-text-light, #ffffff);
+  color: var(--color-text-invert, #ffffff);
   border-color: rgba(255, 255, 255, 0.8);
-  --v-btn-color: var(--color-text-light, #ffffff);
+  --v-btn-color: var(--color-text-invert, #ffffff);
   --v-btn-border-color: rgba(255, 255, 255, 0.8);
 }
 
@@ -760,7 +873,7 @@ watch(selectedPlace, () => {
 
 .recommendations-subtitle {
   font-size: 1rem;
-  color: var(--color-secondary-text, #667085);
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
@@ -812,7 +925,7 @@ watch(selectedPlace, () => {
 }
 
 .selected-place {
-  border-color: var(--color-primary, #007bff);
+  border-color: var(--color-brand-primary);
   background-color: rgba(0, 123, 255, 0.05);
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
 }
@@ -838,7 +951,7 @@ watch(selectedPlace, () => {
 
 .place-type {
   font-size: 0.9rem;
-  color: var(--color-secondary-text, #667085);
+  color: var(--color-text-secondary );
 }
 
 .place-description {
@@ -953,6 +1066,16 @@ watch(selectedPlace, () => {
   align-items: center;
   font-size: 1rem;
   color: #333;
+}
+
+.drawer-map-rounded {
+  width: 100%;
+  height: 200px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e0e0e0;
+  background-color: #f5f5f5;
+  z-index: 1;
 }
 
 </style>
